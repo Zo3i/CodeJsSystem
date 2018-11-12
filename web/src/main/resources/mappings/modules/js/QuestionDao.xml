@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeesite.modules.js.dao.QuestionDao">
+	
+	<!-- 查询数据-->
+	<select id="findList" resultType="Question">
+		SELECT ${sqlMap.column.toSql()}
+		FROM ${sqlMap.table.toSql()}
+		<where>
+			status = 0
+		</where>
+		ORDER BY ${sqlMap.order.toSql()}
+	</select>
+    <!--取随机一道题目-->
+<!--SELECT * FROM js_question ORDER BY RAND()-->
+    <!--从未答题的题目中随机取出一道题目-->
+<!--select * from js_question where id not in (SELECT question_id from js_completed where user_id = 'aaa') and status = 0-->
+	<select id="getRandomQuestion" resultType="Question">
+      select * from js_question
+      where id not in
+      (SELECT question_id from js_completed where user_id = #{userId})
+      and status = 0 ORDER BY RAND() limit 1
+    </select>
+</mapper>

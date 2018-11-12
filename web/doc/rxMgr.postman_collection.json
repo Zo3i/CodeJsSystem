@@ -1,0 +1,966 @@
+{
+	"info": {
+		"_postman_id": "221f93a0-facf-424f-a3ba-6281fb5f9c4d",
+		"name": "rxMgr",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "投票",
+			"description": "",
+			"item": [
+				{
+					"name": "投票列表",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest",
+								"description": "ajax请求"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{rxMgr}}/third/vote/list.json?pageNo=1&pageSize=5&voteTitle=",
+							"host": [
+								"{{rxMgr}}"
+							],
+							"path": [
+								"third",
+								"vote",
+								"list.json"
+							],
+							"query": [
+								{
+									"key": "pageNo",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "5"
+								},
+								{
+									"key": "voteTitle",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "投票信息",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{rxMgr}}/third/vote/1036773138860650496",
+							"host": [
+								"{{rxMgr}}"
+							],
+							"path": [
+								"third",
+								"vote",
+								"1036773138860650496"
+							]
+						},
+						"description": "存在返回数据列表，不存在返回Null"
+					},
+					"response": []
+				},
+				{
+					"name": "投票项投票详情",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{rxMgr}}/third/vote/1036773138860650496/item/1036773138948730880",
+							"host": [
+								"{{rxMgr}}"
+							],
+							"path": [
+								"third",
+								"vote",
+								"1036773138860650496",
+								"item",
+								"1036773138948730880"
+							]
+						},
+						"description": "存在返回数据列表，不存在返回Null"
+					},
+					"response": []
+				},
+				{
+					"name": "投票",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"voteId\": 1039327278440259584,\n\t\"voteItems\":[\n\t\t\"1036773138948730880\"\n\t]\n}"
+						},
+						"url": {
+							"raw": "{{rxMgr}}/third/vote",
+							"host": [
+								"{{rxMgr}}"
+							],
+							"path": [
+								"third",
+								"vote"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "活动",
+			"description": "",
+			"item": [
+				{
+					"name": "活动列表",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest",
+								"description": "ajax请求"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{rxMgr}}/third/activity/list.json?pageNo=1&pageSize=5&activityName=",
+							"host": [
+								"{{rxMgr}}"
+							],
+							"path": [
+								"third",
+								"activity",
+								"list.json"
+							],
+							"query": [
+								{
+									"key": "pageNo",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "5"
+								},
+								{
+									"key": "activityName",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "活动详情",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest",
+								"description": "ajax请求"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{rxMgr}}/third/activity/100236.json",
+							"host": [
+								"{{rxMgr}}"
+							],
+							"path": [
+								"third",
+								"activity",
+								"100236.json"
+							]
+						},
+						"description": "/third/project/1/TAB012/month?month=201807 <br>\nmonth：月份yyyyMM或季度(1~4)，不传的话默认为本月/本季"
+					},
+					"response": []
+				},
+				{
+					"name": "活动报名",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{rxMgr}}/third/activity/100095/register",
+							"host": [
+								"{{rxMgr}}"
+							],
+							"path": [
+								"third",
+								"activity",
+								"100095",
+								"register"
+							]
+						},
+						"description": "/third/activity/{activityId}/register"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "积分",
+			"description": "",
+			"item": [
+				{
+					"name": "商品列表",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest",
+								"description": "ajax请求"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{rxMgr}}/third/goods/list.json?pageNo=1&pageSize=5&goodsName=&goodsScoreStart=0&goodsScoreEnd=99999999",
+							"host": [
+								"{{rxMgr}}"
+							],
+							"path": [
+								"third",
+								"goods",
+								"list.json"
+							],
+							"query": [
+								{
+									"key": "pageNo",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "5"
+								},
+								{
+									"key": "goodsName",
+									"value": ""
+								},
+								{
+									"key": "goodsScoreStart",
+									"value": "0"
+								},
+								{
+									"key": "goodsScoreEnd",
+									"value": "99999999"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "商品明细",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest",
+								"description": "ajax请求"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{rxMgr}}/third/goods/1037900704559697920.json?goodsScoreStart=&goodsScoreEnd=",
+							"host": [
+								"{{rxMgr}}"
+							],
+							"path": [
+								"third",
+								"goods",
+								"1037900704559697920.json"
+							],
+							"query": [
+								{
+									"key": "goodsScoreStart",
+									"value": ""
+								},
+								{
+									"key": "goodsScoreEnd",
+									"value": ""
+								}
+							]
+						},
+						"description": "/third/goods/{goodsId}"
+					},
+					"response": []
+				},
+				{
+					"name": "积分明细列表",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest",
+								"description": "ajax请求"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{rxMgr}}/third/score/list.json?pageNo=1&pageSize=5",
+							"host": [
+								"{{rxMgr}}"
+							],
+							"path": [
+								"third",
+								"score",
+								"list.json"
+							],
+							"query": [
+								{
+									"key": "pageNo",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "积分兑换记录",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest",
+								"description": "ajax请求"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{rxMgr}}/third/score/exchange/list.json?pageNo=1&pageSize=5",
+							"host": [
+								"{{rxMgr}}"
+							],
+							"path": [
+								"third",
+								"score",
+								"exchange",
+								"list.json"
+							],
+							"query": [
+								{
+									"key": "pageNo",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "积分兑换",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest",
+								"description": "ajax请求"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{rxMgr}}/third/score/exchange/goods/1036516181401333402.json",
+							"host": [
+								"{{rxMgr}}"
+							],
+							"path": [
+								"third",
+								"score",
+								"exchange",
+								"goods",
+								"1036516181401333402.json"
+							]
+						},
+						"description": "/third/score/exchange/goods/{goodsId}"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "培训、小贴士",
+			"description": "",
+			"item": [
+				{
+					"name": "培训类型",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest",
+								"description": "ajax请求"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{rxMgr}}/third/learn/type.json",
+							"host": [
+								"{{rxMgr}}"
+							],
+							"path": [
+								"third",
+								"learn",
+								"type.json"
+							]
+						},
+						"description": "/third/project/1/TAB012/month?month=201807 <br>\nmonth：月份yyyyMM或季度(1~4)，不传的话默认为本月/本季"
+					},
+					"response": []
+				},
+				{
+					"name": "培训列表",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest",
+								"description": "ajax请求"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{rxMgr}}/third/learn/list.json?pageNo=1&pageSize=5&learnType=",
+							"host": [
+								"{{rxMgr}}"
+							],
+							"path": [
+								"third",
+								"learn",
+								"list.json"
+							],
+							"query": [
+								{
+									"key": "pageNo",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "5"
+								},
+								{
+									"key": "learnType",
+									"value": ""
+								}
+							]
+						},
+						"description": "/third/project/1/TAB012/month?month=201807 <br>\nmonth：月份yyyyMM或季度(1~4)，不传的话默认为本月/本季"
+					},
+					"response": []
+				},
+				{
+					"name": "培训详情",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest",
+								"description": "ajax请求"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{rxMgr}}/third/learn/1039411192475144192.json",
+							"host": [
+								"{{rxMgr}}"
+							],
+							"path": [
+								"third",
+								"learn",
+								"1039411192475144192.json"
+							]
+						},
+						"description": "/third/project/1/TAB012/month?month=201807 <br>\nmonth：月份yyyyMM或季度(1~4)，不传的话默认为本月/本季"
+					},
+					"response": []
+				},
+				{
+					"name": "小贴士列表",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest",
+								"description": "ajax请求"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{rxMgr}}/third/tip/list.json?pageNo=1&pageSize=5&jobName=",
+							"host": [
+								"{{rxMgr}}"
+							],
+							"path": [
+								"third",
+								"tip",
+								"list.json"
+							],
+							"query": [
+								{
+									"key": "pageNo",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "5"
+								},
+								{
+									"key": "jobName",
+									"value": ""
+								}
+							]
+						},
+						"description": "/third/project/1/TAB012/month?month=201807 <br>\nmonth：月份yyyyMM或季度(1~4)，不传的话默认为本月/本季"
+					},
+					"response": []
+				},
+				{
+					"name": "小贴士详情",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest",
+								"description": "ajax请求"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{rxMgr}}/third/tip/1040038744790478848.json",
+							"host": [
+								"{{rxMgr}}"
+							],
+							"path": [
+								"third",
+								"tip",
+								"1040038744790478848.json"
+							]
+						},
+						"description": "/third/project/1/TAB012/month?month=201807 <br>\nmonth：月份yyyyMM或季度(1~4)，不传的话默认为本月/本季"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "招聘",
+			"description": "",
+			"item": [
+				{
+					"name": "招聘列表",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest",
+								"description": "ajax请求"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{rxMgr}}/third/job/list.json?pageNo=1&pageSize=5&jobName=",
+							"host": [
+								"{{rxMgr}}"
+							],
+							"path": [
+								"third",
+								"job",
+								"list.json"
+							],
+							"query": [
+								{
+									"key": "pageNo",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "5"
+								},
+								{
+									"key": "jobName",
+									"value": ""
+								}
+							]
+						},
+						"description": "/third/project/1/TAB012/month?month=201807 <br>\nmonth：月份yyyyMM或季度(1~4)，不传的话默认为本月/本季"
+					},
+					"response": []
+				},
+				{
+					"name": "招聘详情",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest",
+								"description": "ajax请求"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{rxMgr}}/third/job/1037375514209701888.json",
+							"host": [
+								"{{rxMgr}}"
+							],
+							"path": [
+								"third",
+								"job",
+								"1037375514209701888.json"
+							]
+						},
+						"description": "/third/project/1/TAB012/month?month=201807 <br>\nmonth：月份yyyyMM或季度(1~4)，不传的话默认为本月/本季"
+					},
+					"response": []
+				},
+				{
+					"name": "应聘",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest",
+								"description": "ajax请求"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"jobId\":\"1037375514209701888\",\n\t\"applyName\":\"周传雄\",\n\t\"applyMobile\":\"15990000001\",\n\t\"applyUri\":\"RX/20180101/a.jpg;RX/20180101/b.jpg;\"\n}"
+						},
+						"url": {
+							"raw": "{{rxMgr}}/third/job/apply",
+							"host": [
+								"{{rxMgr}}"
+							],
+							"path": [
+								"third",
+								"job",
+								"apply"
+							]
+						},
+						"description": "/third/project/1/TAB012/month?month=201807 <br>\nmonth：月份yyyyMM或季度(1~4)，不传的话默认为本月/本季"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "登录",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Requested-With",
+						"value": "XMLHttpRequest",
+						"description": "ajax请求"
+					},
+					{
+						"key": "Authorization",
+						"value": "4072C1F7D96FEF9A35CC8AD08662E120",
+						"description": "sessionId"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{rxMgr}}/login?__login=true&__ajax=json&username=F3EDC7D2C193E0B8DCF554C726719ED2&password=235880C505ACCDA5C581A4F4CDB81DA0",
+					"host": [
+						"{{rxMgr}}"
+					],
+					"path": [
+						"login"
+					],
+					"query": [
+						{
+							"key": "__login",
+							"value": "true"
+						},
+						{
+							"key": "__ajax",
+							"value": "json"
+						},
+						{
+							"key": "username",
+							"value": "F3EDC7D2C193E0B8DCF554C726719ED2"
+						},
+						{
+							"key": "password",
+							"value": "235880C505ACCDA5C581A4F4CDB81DA0"
+						}
+					]
+				},
+				"description": "/third/project/1/TAB012/month?month=201807 <br>\nmonth：月份yyyyMM或季度(1~4)，不传的话默认为本月/本季"
+			},
+			"response": []
+		},
+		{
+			"name": "获取oss.STSToken",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Requested-With",
+						"value": "XMLHttpRequest",
+						"description": "ajax请求"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{rxMgr}}/common/oss/sts.json?__sid=6ad2d9ce231b4b378fa4abc800ab5aaf",
+					"host": [
+						"{{rxMgr}}"
+					],
+					"path": [
+						"common",
+						"oss",
+						"sts.json"
+					],
+					"query": [
+						{
+							"key": "__sid",
+							"value": "6ad2d9ce231b4b378fa4abc800ab5aaf"
+						}
+					]
+				},
+				"description": "/third/project/1/TAB012/month?month=201807 <br>\nmonth：月份yyyyMM或季度(1~4)，不传的话默认为本月/本季"
+			},
+			"response": []
+		},
+		{
+			"name": "数据字典获取",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Requested-With",
+						"value": "XMLHttpRequest",
+						"description": "ajax请求"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{rxMgr}}/third/dict/type/sys_learn_type",
+					"host": [
+						"{{rxMgr}}"
+					],
+					"path": [
+						"third",
+						"dict",
+						"type",
+						"sys_learn_type"
+					]
+				},
+				"description": "/third/dict/type/{DictTypeEnum}\n\nDictTypeEnum\n\n    sys_learn_type // 培训类型"
+			},
+			"response": []
+		}
+	]
+}

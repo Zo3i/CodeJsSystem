@@ -1,0 +1,92 @@
+<% layout('/layouts/default.html', {title: 'js_user管理', libs: ['dataGrid']}){ %>
+<div class="main-content">
+	<div class="box box-main">
+		<div class="box-header">
+			<div class="box-title">
+				<i class="fa fa-list-alt"></i> ${text('js_user管理')}
+			</div>
+			<div class="box-tools pull-right">
+				<a href="#" class="btn btn-default" id="btnSearch" title="${text('查询')}"><i class="fa fa-filter"></i> ${text('查询')}</a>
+				<% if(hasPermi('js:jsUser:edit')){ %>
+					<a href="${ctx}/js/jsUser/form" class="btn btn-default btnTool" title="${text('新增js_user')}"><i class="fa fa-plus"></i> ${text('新增')}</a>
+				<% } %>
+			</div>
+		</div>
+		<div class="box-body">
+			<#form:form id="searchForm" model="${jsUser}" action="${ctx}/js/jsUser/listData" method="post" class="form-inline hide"
+					data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
+				<div class="form-group">
+					<label class="control-label">${text('不能为空')}：</label>
+					<div class="control-inline">
+						<#form:input path="id" maxlength="32" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('不能为空')}：</label>
+					<div class="control-inline">
+						<#form:input path="name" maxlength="20" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('性别')}：</label>
+					<div class="control-inline">
+						<#form:input path="sex" maxlength="2" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('rank')}：</label>
+					<div class="control-inline">
+						<#form:input path="rank" maxlength="10" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('team_id')}：</label>
+					<div class="control-inline">
+						<#form:input path="teamId" maxlength="32" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('status')}：</label>
+					<div class="control-inline width-120">
+						<#form:select path="status" dictType="sys_search_status" blankOption="true" class="form-control"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<button type="submit" class="btn btn-primary btn-sm">${text('查询')}</button>
+					<button type="reset" class="btn btn-default btn-sm">${text('重置')}</button>
+				</div>
+			</#form:form>
+			<table id="dataGrid"></table>
+			<div id="dataGridPage"></div>
+		</div>
+	</div>
+</div>
+<% } %>
+<script>
+// 初始化DataGrid对象
+$('#dataGrid').dataGrid({
+	searchForm: $("#searchForm"),
+	columnModel: [
+		{header:'${text('id')}', name:'id', index:'a.id', width:150, align:"left", frozen:true, formatter: function(val, obj, row, act){
+			return '<a href="${ctx}/js/jsUser/form?id='+row.id+'" class="btnList" data-title="${text('编辑js_user')}">'+(val||row.id)+'</a>';
+		}},
+		{header:'${text('姓名')}', name:'name', index:'a.name', width:150, align:"left"},
+		{header:'${text('性别')}', name:'sex', index:'a.sex', width:150, align:"left"},
+		{header:'${text('分数')}', name:'rank', index:'a.rank', width:150, align:"center"},
+		{header:'${text('队伍')}', name:'teamId', index:'a.team_id', width:150, align:"left"},
+		{header:'${text('创建时间')}', name:'createDate', index:'a.create_date', width:150, align:"center"},
+		{header:'${text('操作')}', name:'actions', width:120, sortable:false, title:false, formatter: function(val, obj, row, act){
+			var actions = [];
+			<% if(hasPermi('js:jsUser:edit')){ %>
+				actions.push('<a href="${ctx}/js/jsUser/form?id='+row.id+'" class="btnList" title="${text('编辑js_user')}"><i class="fa fa-pencil"></i></a>&nbsp;');
+				actions.push('<a href="${ctx}/js/jsUser/delete?id='+row.id+'" class="btnList" title="${text('删除js_user')}" data-confirm="${text('确认要删除该js_user吗？')}"><i class="fa fa-trash-o"></i></a>&nbsp;');
+			<% } %>
+			return actions.join('');
+		}}
+	],
+	// 加载成功后执行事件
+	ajaxSuccess: function(data){
+		
+	}
+});
+</script>
