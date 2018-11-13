@@ -49,7 +49,7 @@ public class ThirdController {
     public Question getQuestion(@PathVariable String id) {
         QuestionTasks questionTasks = new QuestionTasks();
         Question question = questionService.get(id);
-        //获取题目的tasks/
+        //获取题目的tasks/.
         questionTasks.setQuestionId(id);
         List<QuestionTasks> tasks = questionTasksService.findList(questionTasks);
         question.setQuestionTasksList(tasks);
