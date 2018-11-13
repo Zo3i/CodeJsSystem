@@ -5,6 +5,7 @@ import com.jeesite.modules.js.entity.QuestionTasks;
 import com.jeesite.modules.js.service.QuestionService;
 import com.jeesite.modules.js.service.QuestionTasksService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,4 +42,17 @@ public class ThirdController {
         question.setQuestionTasksList(tasks);
         return question;
     }
+    /***
+     * 获取指定题目
+     */
+    @RequestMapping("/getQuestion/{id}")
+    public Question getQuestion(@PathVariable String id) {
+        QuestionTasks questionTasks = new QuestionTasks();
+        Question question = questionService.get(id);
+        //获取题目的tasks
+        questionTasks.setQuestionId(id);
+        List<QuestionTasks> tasks = questionTasksService.findList(questionTasks);
+        question.setQuestionTasksList(tasks);
+        return question;
+    };
 }
