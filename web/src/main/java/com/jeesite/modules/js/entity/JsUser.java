@@ -18,7 +18,8 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 @Table(name="${_prefix}user", alias="a", columns={
 		@Column(name="id", attrName="id", label="不能为空", isPK=true),
 		@Column(name="name", attrName="name", label="不能为空", queryType=QueryType.LIKE),
-		@Column(name="sex", attrName="sex", label="性别"),
+		@Column(name="mobile", attrName="mobile", label="电话"),
+		@Column(name="password", attrName="password", label="密码"),
 		@Column(name="rank", attrName="rank", label="rank"),
 		@Column(name="team_id", attrName="teamId", label="team_id"),
 		@Column(includeEntity=DataEntity.class),
@@ -28,7 +29,8 @@ public class JsUser extends DataEntity<JsUser> {
 	
 	private static final long serialVersionUID = 1L;
 	private String name;		// 不能为空
-	private String sex;		// 性别
+	private String mobile;		    // 电话
+	private String password;    //密码
 	private Integer rank;		// rank
 	private String teamId;		// team_id
 	
@@ -48,19 +50,6 @@ public class JsUser extends DataEntity<JsUser> {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	@Length(min=0, max=2, message="性别长度不能超过 2 个字符")
-	public String getSex() {
-		return sex;
-	}
-
-	public void setSex(String sex) {
-		this.sex = sex;
-	}
-	
-	public Integer getRank() {
-		return rank;
-	}
 
 	public void setRank(Integer rank) {
 		this.rank = rank;
@@ -74,5 +63,24 @@ public class JsUser extends DataEntity<JsUser> {
 	public void setTeamId(String teamId) {
 		this.teamId = teamId;
 	}
-	
+
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public Integer getRank() {
+		return rank;
+	}
 }
