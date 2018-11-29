@@ -50,11 +50,23 @@
 			<version>${project.parent.version}</version>
 		</dependency>
 		
+		<!-- 对象与JSON之间相互转换 -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>2.7.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.7.3</version>
+		</dependency>
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
-			<version>1.2.28</version>
+			<version>1.2.23</version>
 		</dependency>
+
 		
 		<!--阿里云oss服务、sts -->
 		<dependency>

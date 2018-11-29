@@ -1,20 +1,28 @@
 package com.jeesite.modules.js.web;
 
+import com.jeesite.common.service.ServiceException;
 import com.jeesite.modules.common.utils.PasswordUtil;
+import com.jeesite.modules.common.utils.RedisUtils;
 import com.jeesite.modules.js.entity.JsUser;
 import com.jeesite.modules.js.entity.Question;
 import com.jeesite.modules.js.entity.QuestionTasks;
+import com.jeesite.modules.js.entity.other.LoginRsp;
 import com.jeesite.modules.js.service.JsUserService;
 import com.jeesite.modules.js.service.QuestionService;
 import com.jeesite.modules.js.service.QuestionTasksService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 
 /***
@@ -31,6 +39,32 @@ public class ThirdController {
     private QuestionTasksService questionTasksService;
     @Autowired
     private JsUserService jsUserService;
+    @Autowired
+    private RedisUtils redisUtils;
+
+    public static final String AUTHORIZATION = "Authorization";
+
+    public HttpServletRequest getRequest() {
+        return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+    }
+
+    /***
+     * 获取当前用户
+     */
+    private LoginRsp getUser () {
+        LoginRsp loginRsp = null;
+        HttpServletRequest request = getRequest();
+        String sessionId = request.getHeader(AUTHORIZATION);
+        if (StringUtils.isBlank(sessionId)) {
+            throw new ServiceException("Header参数有误");
+        }
+        loginRsp = redisUtils.getSession(sessionId);
+        if (loginRsp == null) {
+            throw new ServiceException("请重新登录!");
+        }
+        return loginRsp;
+    }
+
     /***
      * 获取随机一个题目
      */
@@ -74,7 +108,7 @@ public class ThirdController {
      * 登录
      */
     @RequestMapping("/login")
-    public String login(@RequestBody JsUser user) {
+    public LoginRsp login(@RequestBody JsUser user) {
 
         JsUser temp = new JsUser();
         temp.setMobile(user.getMobile());
@@ -83,7 +117,10 @@ public class ThirdController {
             String DbPassWord = dbUser.get(0).getPassword();
             Boolean isPass = PasswordUtil.valid(user.getPassword(), Long.parseLong(user.getMobile()), DbPassWord);
             if (isPass) {
-                return "登录成功!";
+                String token = UUID.randomUUID().toString();
+                LoginRsp loginRsp = new LoginRsp(token, dbUser.get(0));
+                redisUtils.setSession(token, loginRsp);
+                return loginRsp;
             } else {
                 return null;
             }
@@ -97,8 +134,10 @@ public class ThirdController {
      */
     @RequestMapping("/sign")
     public String sign(@RequestBody JsUser user) {
-        if (jsUserService.findList(user).size() > 0) {
-            return "手机号码已存在";
+        JsUser temp = new JsUser();
+        temp.setMobile(user.getMobile());
+        if (jsUserService.findList(temp).size() > 0) {
+            return "该手机号码已被使用!";
         }
         user.setRank(0);
         user.setCreateDate(new Date());
@@ -107,4 +146,12 @@ public class ThirdController {
         jsUserService.save(user);
         return "注册成功咯,请登录!";
     }
+
+    @RequestMapping("/getUserInfo")
+    public LoginRsp getUserInfo() {
+        return getUser();
+    }
+
+
+
 }

@@ -1,21 +1,19 @@
 package com.jeesite.modules.common.utils;
 
 
+import com.jeesite.modules.js.entity.JsUser;
+import com.jeesite.modules.js.entity.other.LoginRsp;
 import redis.clients.jedis.Jedis;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSON;
 import com.jeesite.common.cache.JedisUtils;
-import com.jeesite.modules.common.utils.oss.STSToken;
-
-import java.io.Serializable;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @version 1.0
- * @author linwei
- * @data 2018年2月23日
+ * @author jo
+ * @data 2018年11月23日
  * @描述:
  */
 @Component
@@ -41,16 +39,19 @@ public class RedisUtils {
 		}
 	}
 
-	/**
-     * 阿里云STStoken缓存
-     */
-    public void setSTSToken(STSToken stsToken) {
-        JedisUtils.set("stsToken", JSON.toJSONString(stsToken), TIMEOUT_2_HOUR);
-    }
+	public void setSession(String sessionId, LoginRsp user) {
+		JedisUtils.set(SESSION + sessionId, JSON.toJSONString(user), TIMEOUT_1_WEEK);
+	}
 
-    public STSToken getSTSToken() {
-        String json = JedisUtils.get("stsToken");
-        return StringUtils.isNotBlank(json) ? JSON.parseObject(json, STSToken.class) : null;
+    public LoginRsp getSession(String sessionId) {
+        String key = SESSION + sessionId;
+        String json = JedisUtils.get(key);
+        if (StringUtils.isNotBlank(json)) {
+            Jedis resource = JedisUtils.getResource();
+            resource.expire(key, TIMEOUT_1_WEEK);
+            JedisUtils.returnResource(resource);
+        }
+        return JSON.parseObject(json, LoginRsp.class);
     }
 
 
