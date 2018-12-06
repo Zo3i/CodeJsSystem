@@ -3,19 +3,18 @@ package com.jeesite.modules.js.web;
 import com.jeesite.common.service.ServiceException;
 import com.jeesite.modules.common.utils.PasswordUtil;
 import com.jeesite.modules.common.utils.RedisUtils;
+import com.jeesite.modules.js.entity.Answer;
 import com.jeesite.modules.js.entity.JsUser;
 import com.jeesite.modules.js.entity.Question;
 import com.jeesite.modules.js.entity.QuestionTasks;
 import com.jeesite.modules.js.entity.other.LoginRsp;
+import com.jeesite.modules.js.service.AnswerService;
 import com.jeesite.modules.js.service.JsUserService;
 import com.jeesite.modules.js.service.QuestionService;
 import com.jeesite.modules.js.service.QuestionTasksService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -41,6 +40,8 @@ public class ThirdController {
     private JsUserService jsUserService;
     @Autowired
     private RedisUtils redisUtils;
+    @Autowired
+    private AnswerService answerService;
 
     public static final String AUTHORIZATION = "Authorization";
 
@@ -97,11 +98,18 @@ public class ThirdController {
     };
 
     /***
-     * 保存前端传来的答案 18.11.27
+     * 保存前端传来的答案 18.12.4
      */
     @RequestMapping("/saveAnswer")
-    public void saveAnswer() {
-
+    public String saveAnswer(@RequestBody Answer answer) {
+        JsUser user = new JsUser();
+        user.setMobile(answer.getUserMobile());
+        JsUser temp = jsUserService.findList(user).get(0);
+        if (StringUtils.isNotBlank(temp.getId())) {
+            answer.setUserId(temp.getId());
+        }
+        answerService.save(answer);
+        return "提交成功!";
     }
 
     /***
@@ -150,6 +158,18 @@ public class ThirdController {
     @RequestMapping("/getUserInfo")
     public LoginRsp getUserInfo() {
         return getUser();
+    }
+
+
+    /***
+     * 当前问题所有答案
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/getAllAnwser")
+    public List<Answer> getAllAnwser (@RequestBody Answer answer) {
+        List<Answer> list = answerService.findList(answer);
+        return list;
     }
 
 
