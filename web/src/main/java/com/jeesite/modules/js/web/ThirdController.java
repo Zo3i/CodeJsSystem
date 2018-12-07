@@ -1,17 +1,13 @@
 package com.jeesite.modules.js.web;
 
 import com.jeesite.common.service.ServiceException;
+import com.jeesite.modules.common.utils.BeanUtils;
 import com.jeesite.modules.common.utils.PasswordUtil;
 import com.jeesite.modules.common.utils.RedisUtils;
-import com.jeesite.modules.js.entity.Answer;
-import com.jeesite.modules.js.entity.JsUser;
-import com.jeesite.modules.js.entity.Question;
-import com.jeesite.modules.js.entity.QuestionTasks;
+import com.jeesite.modules.js.entity.*;
+import com.jeesite.modules.js.entity.other.AnswerRes;
 import com.jeesite.modules.js.entity.other.LoginRsp;
-import com.jeesite.modules.js.service.AnswerService;
-import com.jeesite.modules.js.service.JsUserService;
-import com.jeesite.modules.js.service.QuestionService;
-import com.jeesite.modules.js.service.QuestionTasksService;
+import com.jeesite.modules.js.service.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -42,6 +38,10 @@ public class ThirdController {
     private RedisUtils redisUtils;
     @Autowired
     private AnswerService answerService;
+    @Autowired
+    private CollectService collectService;
+    @Autowired
+    private LikeService likeService;
 
     public static final String AUTHORIZATION = "Authorization";
 
@@ -167,9 +167,24 @@ public class ThirdController {
      */
     @ResponseBody
     @RequestMapping("/getAllAnwser")
-    public List<Answer> getAllAnwser (@RequestBody Answer answer) {
+    public List<AnswerRes> getAllAnwser (@RequestBody Answer answer) {
         List<Answer> list = answerService.findList(answer);
-        return list;
+        List<AnswerRes> answerResList = BeanUtils.tran(list, AnswerRes.class);
+        for (AnswerRes s : answerResList) {
+            Question question = questionService.get(s.getQuestionId());
+            JsUser user = jsUserService.get(s.getUserId());
+            Integer collectNum = collectService.findList(new Collect(s.getId())).size();
+            Integer likeNum = likeService.findList(new Like(s.getId())).size();
+            Boolean isLike = likeService.findList(new Like(s.getId(), s.getUserId())).size() > 0 ? true : false;
+            Boolean isCollect = collectService.findList(new Collect(s.getId(), s.getUserId())).size() > 0 ? true : false;
+            s.setQuestion(question);
+            s.setUser(user);
+            s.setTotalCollect(collectNum);
+            s.setTotalLike(likeNum);
+            s.setLike(isLike);
+            s.setCollect(isCollect);
+        }
+        return answerResList;
     }
 
 
