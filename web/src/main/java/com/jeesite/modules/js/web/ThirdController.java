@@ -67,6 +67,16 @@ public class ThirdController {
     }
 
     /***
+     * 通过电话找用户
+     */
+    public JsUser getUserByMobile(String mobile) {
+        JsUser jsUser = new JsUser();
+        jsUser.setMobile(mobile);
+        List<JsUser> list = jsUserService.findList(jsUser);
+        return list.get(0);
+    }
+
+    /***
      * 获取随机一个题目
      */
     @RequestMapping("/getRandomQuestion")
@@ -170,13 +180,17 @@ public class ThirdController {
     public List<AnswerRes> getAllAnwser (@RequestBody Answer answer) {
         List<Answer> list = answerService.findList(answer);
         List<AnswerRes> answerResList = BeanUtils.tran(list, AnswerRes.class);
+        JsUser currentUser = getUserByMobile(answer.getUserMobile());
         for (AnswerRes s : answerResList) {
             Question question = questionService.get(s.getQuestionId());
             JsUser user = jsUserService.get(s.getUserId());
             Integer collectNum = collectService.findList(new Collect(s.getId())).size();
             Integer likeNum = likeService.findList(new Like(s.getId())).size();
-            Boolean isLike = likeService.findList(new Like(s.getId(), s.getUserId())).size() > 0 ? true : false;
-            Boolean isCollect = collectService.findList(new Collect(s.getId(), s.getUserId())).size() > 0 ? true : false;
+
+            Like like = likeService.isLike(s.getId(), currentUser.getId(), s.getUserId());
+
+            Boolean isLike = like != null ? true : false;
+            Boolean isCollect = collectService.findList(new Collect(s.getId(),currentUser.getId(), s.getUserId())).size() > 0 ? true : false;
             s.setQuestion(question);
             s.setUser(user);
             s.setTotalCollect(collectNum);
@@ -185,6 +199,64 @@ public class ThirdController {
             s.setCollect(isCollect);
         }
         return answerResList;
+    }
+
+    /***
+     * 点赞功能18.12.13
+     */
+    @ResponseBody
+    @RequestMapping("/like")
+    public String like(@RequestBody Like like) {
+        if (like != null) {
+            like.setUserid(getUserByMobile(like.getMobile()).getId());
+            if (likeService.findList(like).size() > 0) {
+               return "你已经点过赞了!";
+            } else {
+                likeService.save(like);
+            }
+        }
+        return "success";
+    }
+
+    /***
+     * 取消赞功能18.12.13
+     */
+    @ResponseBody
+    @RequestMapping("/dislike")
+    public void dislike(@RequestBody Like like) {
+        if (like != null) {
+            like.setUserid(getUserByMobile(like.getMobile()).getId());
+            likeService.del(likeService.findList(like).get(0));
+        }
+    }
+
+    /***
+     * 收藏功能18.12.13
+     */
+    @ResponseBody
+    @RequestMapping("/collect")
+    public String  collect(@RequestBody Collect collect) {
+        if (collect != null) {
+            collect.setUserid(getUserByMobile(collect.getMobile()).getId());
+            if (collectService.findList(collect).size() > 0) {
+               return "你已经收藏过了!";
+            } else {
+                collectService.save(collect);
+            }
+        }
+        return "success";
+    }
+
+    /***
+     * 取消收藏功能18.12.13
+     */
+    @ResponseBody
+    @RequestMapping("/discollect")
+    public void discollect(@RequestBody Collect collect) {
+        if (collect != null) {
+            collect.setUserid(getUserByMobile(collect.getMobile()).getId());
+            collectService.del(collectService.findList(collect).get(0));
+        }
     }
 
 

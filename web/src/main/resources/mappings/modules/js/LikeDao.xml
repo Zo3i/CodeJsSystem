@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeesite.modules.js.dao.LikeDao">
+	
+	<!-- 查询数据
+	<select id="findList" resultType="Like">
+		SELECT ${sqlMap.column.toSql()}
+		FROM ${sqlMap.table.toSql()}
+		<where>
+			${sqlMap.where.toSql()}
+		</where>
+		ORDER BY ${sqlMap.order.toSql()}
+	</select> -->
+		<!-- 删除-->
+	<select id="del" >
+		DELETE FROM js_like WHERE id = #{id}
+	</select>
+
+	<select id="isLike" resultType="Like">
+		SELECT * from js_like where userId = #{userId} and answerId = #{answerId} and authorId = #{authorId}
+	</select>
+</mapper>
