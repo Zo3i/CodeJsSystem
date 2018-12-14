@@ -77,5 +77,14 @@ public class AnswerService extends CrudService<AnswerDao, Answer> {
 		super.delete(answer);
 	}
 
+	@Transactional(readOnly=false)
+	public Boolean havaPass(String userId, String questionId) {
+		if (answerDao.havaPass(userId, questionId) != null) {
+			return true;
+		}
+		return false;
+	}
+
+
 
 }

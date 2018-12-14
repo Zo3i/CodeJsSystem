@@ -42,6 +42,8 @@ public class ThirdController {
     private CollectService collectService;
     @Autowired
     private LikeService likeService;
+    @Autowired
+    private CompletedService completedService;
 
     public static final String AUTHORIZATION = "Authorization";
 
@@ -80,12 +82,13 @@ public class ThirdController {
      * 获取随机一个题目
      */
     @RequestMapping("/getRandomQuestion")
-    public Question getRandomQues(String userId) {
+    public Question getRandomQues(String mobile) {
         Question question = new Question();
         QuestionTasks questionTasks = new QuestionTasks();
 
         //获取随机题目
-        question = questionService.getRandomQuestion("aaa");
+        String userId = getUserByMobile(mobile).getId();
+        question = questionService.getRandomQuestion(userId);
         //获取题目的tasks
         String questionId = question.getId();
         questionTasks.setQuestionId(questionId);
@@ -115,11 +118,20 @@ public class ThirdController {
         JsUser user = new JsUser();
         user.setMobile(answer.getUserMobile());
         JsUser temp = jsUserService.findList(user).get(0);
+        //保存答题记录
+        Completed completed = new Completed();
+        completed.setQuestionId(answer.getQuestionId());
+
         if (StringUtils.isNotBlank(temp.getId())) {
             answer.setUserId(temp.getId());
+            completed.setUserId(temp.getId());
+            //查询是否回答过题目
+            if (completedService.get(completed) == null) {
+                completedService.save(completed);
+            }
         }
         answerService.save(answer);
-        return "提交成功!";
+        return "保存成功!";
     }
 
     /***
@@ -178,9 +190,16 @@ public class ThirdController {
     @ResponseBody
     @RequestMapping("/getAllAnwser")
     public List<AnswerRes> getAllAnwser (@RequestBody Answer answer) {
+
+         JsUser currentUser = getUserByMobile(answer.getUserMobile());
+        //校验是否有查看权限
+        if (!answerService.havaPass(currentUser.getId(), answer.getQuestionId())) {
+            return null;
+        }
+
         List<Answer> list = answerService.findList(answer);
         List<AnswerRes> answerResList = BeanUtils.tran(list, AnswerRes.class);
-        JsUser currentUser = getUserByMobile(answer.getUserMobile());
+
         for (AnswerRes s : answerResList) {
             Question question = questionService.get(s.getQuestionId());
             JsUser user = jsUserService.get(s.getUserId());
@@ -257,6 +276,15 @@ public class ThirdController {
             collect.setUserid(getUserByMobile(collect.getMobile()).getId());
             collectService.del(collectService.findList(collect).get(0));
         }
+    }
+
+    /***
+     * 创建团队
+     */
+    @ResponseBody
+    @RequestMapping("/maketeam")
+    public String maketeam() {
+        return "";
     }
 
 

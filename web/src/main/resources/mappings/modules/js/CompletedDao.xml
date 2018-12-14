@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jeesite.modules.js.dao.AnswerDao">
+<mapper namespace="com.jeesite.modules.js.dao.CompletedDao">
 	
 	<!-- 查询数据
-	<select id="findList" resultType="Answer">
+	<select id="findList" resultType="Completed">
 		SELECT ${sqlMap.column.toSql()}
 		FROM ${sqlMap.table.toSql()}
 		<where>
@@ -11,8 +11,5 @@
 		</where>
 		ORDER BY ${sqlMap.order.toSql()}
 	</select> -->
-
-	<select id="havaPass" resultType="Answer">
-		select * from js_answer where user_id = #{userId} and question_id = #{questionId}
-	</select>
+	
 </mapper>
