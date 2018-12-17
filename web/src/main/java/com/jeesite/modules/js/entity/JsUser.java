@@ -3,6 +3,7 @@
  */
 package com.jeesite.modules.js.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.Length;
 
 import com.jeesite.common.entity.DataEntity;
@@ -30,6 +31,7 @@ public class JsUser extends DataEntity<JsUser> {
 	private static final long serialVersionUID = 1L;
 	private String name;		// 不能为空
 	private String mobile;		    // 电话
+	@JsonIgnore
 	private String password;    //密码
 	private Integer rank;		// rank
 	private String teamId;		// team_id

@@ -15,9 +15,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 
 /***
@@ -44,6 +42,10 @@ public class ThirdController {
     private LikeService likeService;
     @Autowired
     private CompletedService completedService;
+    @Autowired
+    private TeamInfoService teamInfoService;
+    @Autowired
+    private TeamMemberService teamMemberService;
 
     public static final String AUTHORIZATION = "Authorization";
 
@@ -64,7 +66,11 @@ public class ThirdController {
         loginRsp = redisUtils.getSession(sessionId);
         if (loginRsp == null) {
             throw new ServiceException("请重新登录!");
+        } else {
+            JsUser temp = getUserByMobile(loginRsp.getMobile());
+            loginRsp = new LoginRsp(sessionId, temp);
         }
+
         return loginRsp;
     }
 
@@ -122,12 +128,19 @@ public class ThirdController {
         Completed completed = new Completed();
         completed.setQuestionId(answer.getQuestionId());
 
+        //获取题目积分
+
+        Question question = questionService.get(answer.getQuestionId());
+        Integer rank = question.getScore();
+
         if (StringUtils.isNotBlank(temp.getId())) {
             answer.setUserId(temp.getId());
             completed.setUserId(temp.getId());
             //查询是否回答过题目
             if (completedService.get(completed) == null) {
                 completedService.save(completed);
+                temp.setRank(temp.getRank() + rank);
+                jsUserService.save(temp);
             }
         }
         answerService.save(answer);
@@ -278,15 +291,95 @@ public class ThirdController {
         }
     }
 
+
+    /***
+     * 查询队伍
+     */
+    @ResponseBody
+    @RequestMapping("/teaminfo")
+    public TeamInfo teaminfo(String mobile) {
+        JsUser user = getUserByMobile(mobile);
+        TeamInfo teamInfo = new TeamInfo();
+        teamInfo.setTeamCreatorId(user.getId());
+        if (teamInfoService.findList(teamInfo).size() == 0){
+            return null;
+        } else {
+            return teamInfoService.findList(teamInfo).get(0);
+        }
+    }
+
+    /***
+     * 查询队伍所有人
+     */
+    @ResponseBody
+    @RequestMapping("/teamall")
+    public List<TeamMember> teamall(String teamid) {
+        TeamMember teamMember = new TeamMember();
+        if (StringUtils.isNotBlank(teamid)) {
+            teamMember.setTeamId(teamid);
+            List<TeamMember> list = teamMemberService.findList(teamMember);
+            for (TeamMember s : list) {
+                s.setJsUser(jsUserService.get(s.getUserId()));
+            }
+            Collections.sort(list, new Comparator<TeamMember>() {
+                @Override
+                public int compare(TeamMember o1, TeamMember o2) {
+                    return (o1.getJsUser().getRank() - o2.getJsUser().getRank()) > 0 ? 1 : -1;
+                }
+            });
+            return list;
+        }
+        return null;
+    }
+
     /***
      * 创建团队
      */
     @ResponseBody
     @RequestMapping("/maketeam")
-    public String maketeam() {
-        return "";
+    public String maketeam(@RequestBody TeamInfo teamInfo) {
+
+        JsUser jsUser = getUserByMobile(teamInfo.getMobile());
+        if (StringUtils.isNotBlank(teamInfo.getTeamName())) {
+            if (teamInfoService.queryByName(teamInfo.getTeamName()) == null) {
+                teamInfo.setRank(Long.valueOf(0));
+                teamInfo.setTeamCreatorId(jsUser.getId());
+                teamInfoService.insert(teamInfo);
+
+                //自动添加
+                TeamMember teamMember = new TeamMember();
+                teamMember.setTeamId(teamInfoService.get(teamInfo).getId());
+                teamMember.setUserId(jsUser.getId());
+                teamMemberService.insert(teamMember);
+            } else {
+                return "您已创建团队,请勿重复创建!";
+            }
+        } else {
+            return "小队名字不能为空!";
+        }
+        return "小队创建成功!";
     }
 
+    /***
+     * 邀请队友
+     */
+    @ResponseBody
+    @RequestMapping("/addmember")
+    public String addmember(@RequestBody TeamMember teamMember) {
 
+        if (StringUtils.isNotBlank(teamMember.getMobile())) {
+            JsUser user = getUserByMobile(teamMember.getMobile());
+
+            if (teamMemberService.findList(teamMember).size() == 0) {
+                teamMember.setUserId(user.getId());
+                teamMemberService.insert(teamMember);
+            } else {
+                return "你已经在小队了!";
+            }
+        } else {
+            return "请填写你要邀请的用户!";
+        }
+        return "已加入小队!";
+    }
 
 }
