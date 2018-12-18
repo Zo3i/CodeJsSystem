@@ -299,11 +299,15 @@ public class ThirdController {
     @RequestMapping("/teaminfo")
     public TeamInfo teaminfo(String mobile) {
         JsUser user = getUserByMobile(mobile);
+        TeamMember teamMember = new TeamMember();
         TeamInfo teamInfo = new TeamInfo();
-        teamInfo.setTeamCreatorId(user.getId());
-        if (teamInfoService.findList(teamInfo).size() == 0){
+
+        teamMember.setUserId(user.getId());
+        List<TeamMember> list = teamMemberService.findList(teamMember);
+        if (list.size() == 0){
             return null;
         } else {
+            teamInfo.setId(list.get(0).getTeamId());
             return teamInfoService.findList(teamInfo).get(0);
         }
     }
@@ -324,7 +328,7 @@ public class ThirdController {
             Collections.sort(list, new Comparator<TeamMember>() {
                 @Override
                 public int compare(TeamMember o1, TeamMember o2) {
-                    return (o1.getJsUser().getRank() - o2.getJsUser().getRank()) > 0 ? 1 : -1;
+                    return (o1.getJsUser().getRank() - o2.getJsUser().getRank()) > 0 ? -1 : 1;
                 }
             });
             return list;
@@ -361,23 +365,27 @@ public class ThirdController {
     }
 
     /***
-     * 邀请队友
+     * 加入小队
      */
     @ResponseBody
-    @RequestMapping("/addmember")
-    public String addmember(@RequestBody TeamMember teamMember) {
+    @RequestMapping("/jointeam")
+    public String jointeam(@RequestBody TeamInfo teamInfo) {
 
-        if (StringUtils.isNotBlank(teamMember.getMobile())) {
-            JsUser user = getUserByMobile(teamMember.getMobile());
+        TeamInfo team = teamInfoService.findList(teamInfo).get(0);
+        TeamMember teamMember = new TeamMember();
 
-            if (teamMemberService.findList(teamMember).size() == 0) {
-                teamMember.setUserId(user.getId());
+        if (StringUtils.isNotBlank(teamInfo.getMobile())) {
+            JsUser user = getUserByMobile(teamInfo.getMobile());
+            teamMember.setUserId(user.getId());
+            List<TeamMember> teamMemberList = teamMemberService.findList(teamMember);
+            if (teamMemberList.size() == 0) {
+                teamMember.setTeamId(team.getId());
                 teamMemberService.insert(teamMember);
             } else {
                 return "你已经在小队了!";
             }
         } else {
-            return "请填写你要邀请的用户!";
+            return "请填写你要加入的队伍!";
         }
         return "已加入小队!";
     }
