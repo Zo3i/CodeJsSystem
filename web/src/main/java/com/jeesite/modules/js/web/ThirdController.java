@@ -7,6 +7,7 @@ import com.jeesite.modules.common.utils.RedisUtils;
 import com.jeesite.modules.js.entity.*;
 import com.jeesite.modules.js.entity.other.AnswerRes;
 import com.jeesite.modules.js.entity.other.LoginRsp;
+import com.jeesite.modules.js.entity.other.TeamRes;
 import com.jeesite.modules.js.service.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,10 +97,12 @@ public class ThirdController {
         String userId = getUserByMobile(mobile).getId();
         question = questionService.getRandomQuestion(userId);
         //获取题目的tasks
-        String questionId = question.getId();
-        questionTasks.setQuestionId(questionId);
-        List<QuestionTasks> tasks = questionTasksService.findList(questionTasks);
-        question.setQuestionTasksList(tasks);
+        if (question != null) {
+            String questionId = question.getId();
+            questionTasks.setQuestionId(questionId);
+            List<QuestionTasks> tasks = questionTasksService.findList(questionTasks);
+            question.setQuestionTasksList(tasks);
+        }
         return question;
     }
     /***
@@ -388,6 +391,23 @@ public class ThirdController {
             return "请填写你要加入的队伍!";
         }
         return "已加入小队!";
+    }
+
+
+    /***
+     * 所有队伍
+     */
+    @ResponseBody
+    @RequestMapping("/teamlist")
+    public List<TeamRes> getTeamList() {
+        List<TeamInfo> list = teamInfoService.findList(new TeamInfo());
+
+        List<TeamRes> teamList = null;
+        for (TeamInfo s : list) {
+            TeamRes teamRes = new TeamRes();
+//            teamRes.setTeamCreatorName();
+        }
+        return null;
     }
 
 }
