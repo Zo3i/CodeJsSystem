@@ -233,6 +233,14 @@ public class ThirdController {
             s.setLike(isLike);
             s.setCollect(isCollect);
         }
+
+        //最佳答案排序
+        Collections.sort(answerResList, new Comparator<AnswerRes>() {
+                @Override
+                public int compare(AnswerRes o1, AnswerRes o2) {
+                    return ((o1.getTotalCollect() + o1.getTotalLike()) - (o2.getTotalCollect() + o2.getTotalLike())) > 0 ? -1 : 1;
+                }
+            });
         return answerResList;
     }
 
