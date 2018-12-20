@@ -85,6 +85,10 @@ public class AnswerService extends CrudService<AnswerDao, Answer> {
 		return false;
 	}
 
+	@Transactional(readOnly=false)
+	public List<Answer> queryLikeAnswer(List<String> likeAnswerId) {
+		return answerDao.queryLikeAnswer(likeAnswerId);
+	}
 
 
 }

@@ -15,4 +15,12 @@
 	<select id="havaPass" resultType="Answer">
 		select * from js_answer where user_id = #{userId} and question_id = #{questionId}
 	</select>
+
+	<select id="queryLikeAnswer" resultType="Answer">
+		SELECT * from js_answer
+		where id in
+		<foreach collection="likeAnswerIds" item="item" open="(" close=")" separator=",">
+					'${item}'
+		</foreach>
+	</select>
 </mapper>

@@ -18,4 +18,12 @@
 	<select id="isCollect" resultType="Collect">
 		SELECT * from js_collect where userId = #{userId} and answerId = #{answerId} and authorId = #{authorId}
 	</select>
+
+	<select id="queryCollectAnswer" resultType="Answer">
+		SELECT * from js_collect
+		where id in
+		<foreach collection="collectAnswerIds" item="item" open="(" close=")" separator=",">
+					'${item}'
+		</foreach>
+	</select>
 </mapper>

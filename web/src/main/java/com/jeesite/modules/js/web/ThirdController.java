@@ -57,7 +57,7 @@ public class ThirdController {
     /***
      * 获取当前用户
      */
-    private LoginRsp getUser () {
+    private LoginRsp getUser() {
         LoginRsp loginRsp = null;
         HttpServletRequest request = getRequest();
         String sessionId = request.getHeader(AUTHORIZATION);
@@ -105,6 +105,7 @@ public class ThirdController {
         }
         return question;
     }
+
     /***
      * 获取指定题目
      */
@@ -117,7 +118,9 @@ public class ThirdController {
         List<QuestionTasks> tasks = questionTasksService.findList(questionTasks);
         question.setQuestionTasksList(tasks);
         return question;
-    };
+    }
+
+    ;
 
     /***
      * 保存前端传来的答案 18.12.4
@@ -187,7 +190,7 @@ public class ThirdController {
         }
         user.setRank(0);
         user.setCreateDate(new Date());
-        String md5Password =  PasswordUtil.getMd5PasswordOnce(user.getPassword(), Long.parseLong(user.getMobile()));
+        String md5Password = PasswordUtil.getMd5PasswordOnce(user.getPassword(), Long.parseLong(user.getMobile()));
         user.setPassword(md5Password);
         jsUserService.save(user);
         return "注册成功咯,请登录!";
@@ -205,9 +208,9 @@ public class ThirdController {
      */
     @ResponseBody
     @RequestMapping("/getAllAnwser")
-    public List<AnswerRes> getAllAnwser (@RequestBody Answer answer) {
+    public List<AnswerRes> getAllAnwser(@RequestBody Answer answer) {
 
-         JsUser currentUser = getUserByMobile(answer.getUserMobile());
+        JsUser currentUser = getUserByMobile(answer.getUserMobile());
         //校验是否有查看权限
         if (!answerService.havaPass(currentUser.getId(), answer.getQuestionId())) {
             return null;
@@ -225,7 +228,7 @@ public class ThirdController {
             Like like = likeService.isLike(s.getId(), currentUser.getId(), s.getUserId());
 
             Boolean isLike = like != null ? true : false;
-            Boolean isCollect = collectService.findList(new Collect(s.getId(),currentUser.getId(), s.getUserId())).size() > 0 ? true : false;
+            Boolean isCollect = collectService.findList(new Collect(s.getId(), currentUser.getId(), s.getUserId())).size() > 0 ? true : false;
             s.setQuestion(question);
             s.setUser(user);
             s.setTotalCollect(collectNum);
@@ -236,11 +239,11 @@ public class ThirdController {
 
         //最佳答案排序
         Collections.sort(answerResList, new Comparator<AnswerRes>() {
-                @Override
-                public int compare(AnswerRes o1, AnswerRes o2) {
-                    return ((o1.getTotalCollect() + o1.getTotalLike()) - (o2.getTotalCollect() + o2.getTotalLike())) > 0 ? -1 : 1;
-                }
-            });
+            @Override
+            public int compare(AnswerRes o1, AnswerRes o2) {
+                return ((o1.getTotalCollect() + o1.getTotalLike()) - (o2.getTotalCollect() + o2.getTotalLike())) > 0 ? -1 : 1;
+            }
+        });
         return answerResList;
     }
 
@@ -253,7 +256,7 @@ public class ThirdController {
         if (like != null) {
             like.setUserid(getUserByMobile(like.getMobile()).getId());
             if (likeService.findList(like).size() > 0) {
-               return "你已经点过赞了!";
+                return "你已经点过赞了!";
             } else {
                 likeService.save(like);
             }
@@ -278,11 +281,11 @@ public class ThirdController {
      */
     @ResponseBody
     @RequestMapping("/collect")
-    public String  collect(@RequestBody Collect collect) {
+    public String collect(@RequestBody Collect collect) {
         if (collect != null) {
             collect.setUserid(getUserByMobile(collect.getMobile()).getId());
             if (collectService.findList(collect).size() > 0) {
-               return "你已经收藏过了!";
+                return "你已经收藏过了!";
             } else {
                 collectService.save(collect);
             }
@@ -315,7 +318,7 @@ public class ThirdController {
 
         teamMember.setUserId(user.getId());
         List<TeamMember> list = teamMemberService.findList(teamMember);
-        if (list.size() == 0){
+        if (list.size() == 0) {
             return null;
         } else {
             teamInfo.setId(list.get(0).getTeamId());
@@ -417,5 +420,140 @@ public class ThirdController {
         }
         return null;
     }
+
+
+    /***
+     * 当前用户所有答案
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/getMyAnwser")
+    public List<AnswerRes> getMyAnwser(String token) {
+
+        LoginRsp loginRsp = redisUtils.getSession(token);
+        if (loginRsp != null) {
+
+            JsUser currentUser = getUserByMobile(loginRsp.getMobile());
+
+            Answer answer = new Answer();
+            answer.setUserId(currentUser.getId());
+
+            List<Answer> list = answerService.findList(answer);
+            List<AnswerRes> answerResList = BeanUtils.tran(list, AnswerRes.class);
+
+            for (AnswerRes s : answerResList) {
+                Question question = questionService.get(s.getQuestionId());
+                JsUser user = jsUserService.get(s.getUserId());
+                Integer collectNum = collectService.findList(new Collect(s.getId())).size();
+                Integer likeNum = likeService.findList(new Like(s.getId())).size();
+
+                Like like = likeService.isLike(s.getId(), currentUser.getId(), s.getUserId());
+
+                Boolean isLike = like != null ? true : false;
+                Boolean isCollect = collectService.findList(new Collect(s.getId(), currentUser.getId(), s.getUserId())).size() > 0 ? true : false;
+                s.setQuestion(question);
+                s.setUser(user);
+                s.setTotalCollect(collectNum);
+                s.setTotalLike(likeNum);
+                s.setLike(isLike);
+                s.setCollect(isCollect);
+            }
+            return answerResList;
+        } else {
+            return null;
+        }
+
+    }
+
+     /***
+     * 当前用户喜欢的答案
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/getLikeAnwser")
+    public List<AnswerRes> getLikeAnwser(String token) {
+
+        LoginRsp loginRsp = redisUtils.getSession(token);
+        if (loginRsp != null) {
+
+            JsUser currentUser = getUserByMobile(loginRsp.getMobile());
+
+            Answer answer = new Answer();
+            answer.setUserId(currentUser.getId());
+            Like likes = new Like();
+            likes.setUserid(currentUser.getId());
+            List<String> likeAnswerId = BeanUtils.getField(likeService.findList(likes), "answerid");
+            List<Answer> list = answerService.queryLikeAnswer(likeAnswerId);
+            List<AnswerRes> answerResList = BeanUtils.tran(list, AnswerRes.class);
+
+            for (AnswerRes s : answerResList) {
+                Question question = questionService.get(s.getQuestionId());
+                JsUser user = jsUserService.get(s.getUserId());
+                Integer collectNum = collectService.findList(new Collect(s.getId())).size();
+                Integer likeNum = likeService.findList(new Like(s.getId())).size();
+
+                Like like = likeService.isLike(s.getId(), currentUser.getId(), s.getUserId());
+
+                Boolean isLike = like != null ? true : false;
+                Boolean isCollect = collectService.findList(new Collect(s.getId(), currentUser.getId(), s.getUserId())).size() > 0 ? true : false;
+                s.setQuestion(question);
+                s.setUser(user);
+                s.setTotalCollect(collectNum);
+                s.setTotalLike(likeNum);
+                s.setLike(isLike);
+                s.setCollect(isCollect);
+            }
+            return answerResList;
+        } else {
+            return null;
+        }
+    }
+
+     /***
+     * 当前用户收藏答案
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/getCollctAnwser")
+    public List<AnswerRes> getCollctAnwser(String token) {
+
+        LoginRsp loginRsp = redisUtils.getSession(token);
+        if (loginRsp != null) {
+
+            JsUser currentUser = getUserByMobile(loginRsp.getMobile());
+
+            Answer answer = new Answer();
+            answer.setUserId(currentUser.getId());
+
+            Collect collect = new Collect();
+            collect.setUserid(currentUser.getId());
+            List<String> collectAnswer = BeanUtils.getField(collectService.findList(collect), "answerid");
+            List<Answer> list = answerService.queryLikeAnswer(collectAnswer);
+
+            List<AnswerRes> answerResList = BeanUtils.tran(list, AnswerRes.class);
+
+            for (AnswerRes s : answerResList) {
+                Question question = questionService.get(s.getQuestionId());
+                JsUser user = jsUserService.get(s.getUserId());
+                Integer collectNum = collectService.findList(new Collect(s.getId())).size();
+                Integer likeNum = likeService.findList(new Like(s.getId())).size();
+
+                Like like = likeService.isLike(s.getId(), currentUser.getId(), s.getUserId());
+
+                Boolean isLike = like != null ? true : false;
+                Boolean isCollect = collectService.findList(new Collect(s.getId(), currentUser.getId(), s.getUserId())).size() > 0 ? true : false;
+                s.setQuestion(question);
+                s.setUser(user);
+                s.setTotalCollect(collectNum);
+                s.setTotalLike(likeNum);
+                s.setLike(isLike);
+                s.setCollect(isCollect);
+            }
+            return answerResList;
+        } else {
+            return null;
+        }
+    }
+
 
 }

@@ -5,8 +5,11 @@ package com.jeesite.modules.js.dao;
 
 import com.jeesite.common.dao.CrudDao;
 import com.jeesite.common.mybatis.annotation.MyBatisDao;
+import com.jeesite.modules.js.entity.Answer;
 import com.jeesite.modules.js.entity.Collect;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * js_collectDAO接口
@@ -17,4 +20,5 @@ import org.apache.ibatis.annotations.Param;
 public interface CollectDao extends CrudDao<Collect> {
 	void del(@Param("id") String id);
 	Collect isCollect(@Param("answerId") String answerId, @Param("userId") String userId, @Param("authorId") String authorId);
+    List<Answer> queryCollectAnswer(@Param("collectAnswerIds") List<String> collectAnswerIds);
 }

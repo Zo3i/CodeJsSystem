@@ -5,6 +5,7 @@ package com.jeesite.modules.js.service;
 
 import java.util.List;
 
+import com.jeesite.modules.js.entity.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,5 +86,11 @@ public class CollectService extends CrudService<CollectDao, Collect> {
 	public Collect isCollect (String answerId, String userId, String authorId){
 		return collectDao.isCollect(answerId, userId, authorId);
 	}
+
+	@Transactional(readOnly=false)
+	public List<Answer> queryCollectAnswer(List<String> likeAnswerIds) {
+		return collectDao.queryCollectAnswer(likeAnswerIds);
+	}
+
 
 }
