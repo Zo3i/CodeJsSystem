@@ -12,4 +12,8 @@
 		ORDER BY ${sqlMap.order.toSql()}
 	</select> -->
 	<select id="queryByName" resultType="TeamInfo">select * from js_team_info where team_name = #{teamName}</select>
+
+	<select id="queryByUserId" resultType="TeamInfo">
+		select * from js_team_info t LEFT JOIN js_team_member m on t.id = m.team_id where  m.user_id = #{userId}
+	</select>
 </mapper>

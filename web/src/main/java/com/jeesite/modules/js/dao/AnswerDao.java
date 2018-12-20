@@ -19,4 +19,5 @@ import java.util.List;
 public interface AnswerDao extends CrudDao<Answer> {
     Answer havaPass(@Param("userId") String userId, @Param("questionId") String questionId);
     List<Answer> queryLikeAnswer(@Param("likeAnswerIds") List<String> likeAnswerIds);
+    List<Answer> queryCollectAnswer(@Param("collectAnswerIds") List<String> collectAnswerIds);
 }

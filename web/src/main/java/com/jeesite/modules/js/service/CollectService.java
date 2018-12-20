@@ -87,10 +87,5 @@ public class CollectService extends CrudService<CollectDao, Collect> {
 		return collectDao.isCollect(answerId, userId, authorId);
 	}
 
-	@Transactional(readOnly=false)
-	public List<Answer> queryCollectAnswer(List<String> likeAnswerIds) {
-		return collectDao.queryCollectAnswer(likeAnswerIds);
-	}
-
 
 }

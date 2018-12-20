@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.jeesite.modules.js.dao.QuestionTasksDao;
 import com.jeesite.modules.js.entity.QuestionTasks;
+import com.jeesite.modules.js.entity.other.QuestionRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -104,5 +105,10 @@ public class QuestionService extends CrudService<QuestionDao, Question> {
 		return questionDao.getRandomQuestion(userId);
 	}
 
+
+	@Transactional(readOnly = false)
+	public List<Question> getAllQuestion(String userId) {
+		return questionDao.getAllQuestion(userId);
+	};
 
 }

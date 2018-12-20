@@ -23,4 +23,12 @@
 					'${item}'
 		</foreach>
 	</select>
+
+	<select id="queryCollectAnswer" resultType="Answer">
+		SELECT * from js_answer
+		where id in
+		<foreach collection="collectAnswerIds" item="item" open="(" close=")" separator=",">
+					'${item}'
+		</foreach>
+	</select>
 </mapper>

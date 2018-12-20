@@ -21,4 +21,8 @@
       (SELECT question_id from js_completed where user_id = #{userId})
       and status = 0 ORDER BY RAND() limit 1
     </select>
+
+	<select id="getAllQuestion" resultType="Question">
+		SELECT a.create_date createTime, q.`name` name, q.score score from js_answer a  LEFT JOIN js_question q on q.id = a.question_id  where  a.user_id = #{userId}
+	</select>
 </mapper>

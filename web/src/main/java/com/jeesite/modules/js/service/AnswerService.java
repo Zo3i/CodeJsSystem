@@ -90,5 +90,10 @@ public class AnswerService extends CrudService<AnswerDao, Answer> {
 		return answerDao.queryLikeAnswer(likeAnswerId);
 	}
 
+	@Transactional(readOnly=false)
+	public List<Answer> queryCollectAnswer(List<String> collectAnswerIds) {
+		return answerDao.queryCollectAnswer(collectAnswerIds);
+	}
+
 
 }

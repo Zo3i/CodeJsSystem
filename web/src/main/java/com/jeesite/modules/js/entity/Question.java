@@ -11,6 +11,7 @@ import com.jeesite.common.mybatis.annotation.Column;
 import com.jeesite.common.mybatis.annotation.Table;
 import com.jeesite.common.mybatis.mapper.query.QueryType;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -34,6 +35,7 @@ public class Question extends DataEntity<Question> {
 	private String description;		// description
 	private int score;
 	private String questionInit;
+	private Date createTime;
 
 	private List<QuestionTasks> questionTasksList = ListUtils.newArrayList();
 	
@@ -85,5 +87,13 @@ public class Question extends DataEntity<Question> {
 
 	public void setQuestionTasksList(List<QuestionTasks> questionTasksList) {
 		this.questionTasksList = questionTasksList;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 }

@@ -82,4 +82,12 @@ public class TeamInfoService extends CrudService<TeamInfoDao, TeamInfo> {
 		return teamInfoDao.queryByName(teamName);
 	};
 
+
+	@Transactional(readOnly=false)
+	public TeamInfo queryByUserId(String userId){
+		return teamInfoDao.queryByUserId(userId);
+	};
+
+
+
 }

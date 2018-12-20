@@ -20,5 +20,4 @@ import java.util.List;
 public interface CollectDao extends CrudDao<Collect> {
 	void del(@Param("id") String id);
 	Collect isCollect(@Param("answerId") String answerId, @Param("userId") String userId, @Param("authorId") String authorId);
-    List<Answer> queryCollectAnswer(@Param("collectAnswerIds") List<String> collectAnswerIds);
 }

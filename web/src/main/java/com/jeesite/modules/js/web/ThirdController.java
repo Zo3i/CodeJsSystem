@@ -5,9 +5,7 @@ import com.jeesite.modules.common.utils.BeanUtils;
 import com.jeesite.modules.common.utils.PasswordUtil;
 import com.jeesite.modules.common.utils.RedisUtils;
 import com.jeesite.modules.js.entity.*;
-import com.jeesite.modules.js.entity.other.AnswerRes;
-import com.jeesite.modules.js.entity.other.LoginRsp;
-import com.jeesite.modules.js.entity.other.TeamRes;
+import com.jeesite.modules.js.entity.other.*;
 import com.jeesite.modules.js.service.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -528,7 +526,7 @@ public class ThirdController {
             Collect collect = new Collect();
             collect.setUserid(currentUser.getId());
             List<String> collectAnswer = BeanUtils.getField(collectService.findList(collect), "answerid");
-            List<Answer> list = answerService.queryLikeAnswer(collectAnswer);
+            List<Answer> list = answerService.queryCollectAnswer(collectAnswer);
 
             List<AnswerRes> answerResList = BeanUtils.tran(list, AnswerRes.class);
 
@@ -555,5 +553,64 @@ public class ThirdController {
         }
     }
 
+     /***
+     * 当前用户所有做过的答案
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/getAllQuestion")
+    public List<QuestionRes> getAllQuestion(String token) {
+
+        List<QuestionRes> list = null;
+        LoginRsp loginRsp = redisUtils.getSession(token);
+        if (loginRsp != null) {
+
+            JsUser currentUser = getUserByMobile(loginRsp.getMobile());
+            if (currentUser != null) {
+                List<Question> questionlist = questionService.getAllQuestion(currentUser.getId());
+                list = BeanUtils.tran(questionlist, QuestionRes.class);
+            }
+        }
+        return  list;
+    }
+
+    /***
+     * 信息中心数据
+     */
+    @ResponseBody
+    @RequestMapping("/myInfo")
+    public MyInfo myInfo(String token) {
+
+        LoginRsp loginRsp = redisUtils.getSession(token);
+        MyInfo myInfo = new MyInfo();
+        if (loginRsp != null) {
+
+            JsUser currentUser = getUserByMobile(loginRsp.getMobile());
+            if (currentUser != null) {
+                Like like = new Like();
+                like.setAuthorid(currentUser.getId());
+
+                Collect collect = new Collect();
+                collect.setAuthorid(currentUser.getId());
+
+                TeamInfo teamInfo = teamInfoService.queryByUserId(currentUser.getId());
+
+
+                Integer totleLike = likeService.findList(like).size();
+                Integer totleCollect = collectService.findList(collect).size();
+
+                if (teamInfo != null) {
+                    myInfo.setTeam(teamInfo.getTeamName());
+                }  else {
+                    myInfo.setTeam("暂无战队!");
+                }
+                myInfo.setTotleCollect(totleCollect);
+                myInfo.setTotleLike(totleLike);
+                myInfo.setTotleRank(currentUser.getRank());
+
+            }
+        }
+       return myInfo;
+    }
 
 }

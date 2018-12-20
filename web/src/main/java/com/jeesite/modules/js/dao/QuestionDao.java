@@ -6,7 +6,10 @@ package com.jeesite.modules.js.dao;
 import com.jeesite.common.dao.CrudDao;
 import com.jeesite.common.mybatis.annotation.MyBatisDao;
 import com.jeesite.modules.js.entity.Question;
+import com.jeesite.modules.js.entity.other.QuestionRes;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 
 /**
@@ -17,4 +20,5 @@ import org.apache.ibatis.annotations.Param;
 @MyBatisDao
 public interface QuestionDao extends CrudDao<Question> {
 	Question getRandomQuestion(@Param("userId") String userId);
+	List<Question> getAllQuestion(@Param("userId") String userId);
 }

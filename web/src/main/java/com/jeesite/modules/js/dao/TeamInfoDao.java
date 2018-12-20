@@ -16,4 +16,6 @@ import org.apache.ibatis.annotations.Param;
 @MyBatisDao
 public interface TeamInfoDao extends CrudDao<TeamInfo> {
 	public TeamInfo queryByName(@Param("teamName") String teamName);
+	public TeamInfo queryByUserId(@Param("userId") String userId);
+
 }
