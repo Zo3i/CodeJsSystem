@@ -10,6 +10,7 @@ public class LoginRsp {
 	private String mobile;		    // 电话
 	private Integer rank;		// rank
 	private String teamId;		// team_id
+    private String zoneId;
 
     public LoginRsp() {
         super();
@@ -22,6 +23,7 @@ public class LoginRsp {
         this.name = s.getName();
         this.rank = s.getRank();
         this.teamId = s.getTeamId();
+        this.zoneId = s.getZoneId();
     }
 
     public String getToken() {
@@ -62,5 +64,13 @@ public class LoginRsp {
 
     public void setTeamId(String teamId) {
         this.teamId = teamId;
+    }
+
+    public String getZoneId() {
+        return zoneId;
+    }
+
+    public void setZoneId(String zoneId) {
+        this.zoneId = zoneId;
     }
 }

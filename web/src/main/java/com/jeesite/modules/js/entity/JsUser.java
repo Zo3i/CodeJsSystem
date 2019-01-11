@@ -23,6 +23,7 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 		@Column(name="password", attrName="password", label="密码"),
 		@Column(name="rank", attrName="rank", label="rank"),
 		@Column(name="team_id", attrName="teamId", label="team_id"),
+		@Column(name="zone_id", attrName="zoneId", label="zone_id"),
 		@Column(includeEntity=DataEntity.class),
 	}, orderBy="a.update_date DESC"
 )
@@ -35,6 +36,7 @@ public class JsUser extends DataEntity<JsUser> {
 	private String password;    //密码
 	private Integer rank;		// rank
 	private String teamId;		// team_id
+	private String zoneId;
 	
 	public JsUser() {
 		this(null);
@@ -56,7 +58,7 @@ public class JsUser extends DataEntity<JsUser> {
 	public void setRank(Integer rank) {
 		this.rank = rank;
 	}
-	
+
 	@Length(min=0, max=32, message="team_id长度不能超过 32 个字符")
 	public String getTeamId() {
 		return teamId;
@@ -84,5 +86,13 @@ public class JsUser extends DataEntity<JsUser> {
 
 	public Integer getRank() {
 		return rank;
+	}
+
+	public String getZoneId() {
+		return zoneId;
+	}
+
+	public void setZoneId(String zoneId) {
+		this.zoneId = zoneId;
 	}
 }

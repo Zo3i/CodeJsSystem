@@ -45,6 +45,8 @@ public class ThirdController {
     private TeamInfoService teamInfoService;
     @Autowired
     private TeamMemberService teamMemberService;
+    @Autowired
+    private CommentService commentService;
 
     public static final String AUTHORIZATION = "Authorization";
 
@@ -140,14 +142,19 @@ public class ThirdController {
         if (StringUtils.isNotBlank(temp.getId())) {
             answer.setUserId(temp.getId());
             completed.setUserId(temp.getId());
+            completed.setQuestionId(question.getId());
             //查询是否回答过题目
-            if (completedService.get(completed) == null) {
+            List<Completed> c = completedService.findList(completed);
+            if ( c.size() == 0) {
                 completedService.save(completed);
                 temp.setRank(temp.getRank() + rank);
                 jsUserService.save(temp);
+                answerService.save(answer);
+            } else {
+                return "您已经回答过了!";
             }
         }
-        answerService.save(answer);
+
         return "保存成功!";
     }
 
@@ -188,6 +195,7 @@ public class ThirdController {
         }
         user.setRank(0);
         user.setCreateDate(new Date());
+        user.setZoneId(UUID.randomUUID().toString());
         String md5Password = PasswordUtil.getMd5PasswordOnce(user.getPassword(), Long.parseLong(user.getMobile()));
         user.setPassword(md5Password);
         jsUserService.save(user);
@@ -612,5 +620,47 @@ public class ThirdController {
         }
        return myInfo;
     }
+
+    /***
+     * 查询当前空间的所有留言
+     */
+    @ResponseBody
+    @RequestMapping("/getComment")
+    public List<CommentRes> getComment (String zoneId) {
+       Comment comment = new Comment();
+       comment.setZone(zoneId);
+
+       List<Comment> list = commentService.findList(comment);
+       List<CommentRes> commentResList = BeanUtils.tran(list, CommentRes.class);
+
+       for (CommentRes c : commentResList) {
+           c.setFromName(jsUserService.get(c.getFromUserId()).getName());
+           if (StringUtils.isNotBlank(c.getToUserId())) {
+               c.setToName(jsUserService.get(c.getToUserId()).getName());
+           }
+       }
+       return commentResList;
+    }
+
+    /***
+     * 留言
+     */
+    @ResponseBody
+    @RequestMapping("/leaveComment")
+    public String leaveComment (@RequestBody Comment comment) {
+
+        String fromMobile = comment.getFromMobile();
+        JsUser fromUser = getUserByMobile(fromMobile);
+        comment.setFromUserId(fromUser.getId());
+
+        if (StringUtils.isBlank(comment.getComment())) {
+            return "空的留言,不如不留";
+        }
+        commentService.save(comment);
+        return "收到你的留言咯!";
+
+
+    }
+
 
 }
