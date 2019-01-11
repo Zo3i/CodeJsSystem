@@ -1,9 +1,13 @@
 package com.jeesite.modules.js.entity.other;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.jeesite.modules.js.entity.Answer;
 import com.jeesite.modules.js.entity.Comment;
 import com.jeesite.modules.js.entity.JsUser;
 import com.jeesite.modules.js.entity.Question;
+
+import javax.xml.crypto.Data;
+import java.util.Date;
 
 public class CommentRes {
 
@@ -15,6 +19,8 @@ public class CommentRes {
 
     private String fromName;
     private String ToName;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date createTime;
 
     public CommentRes(Comment comment) {
         this.zone = comment.getZone();
@@ -22,6 +28,7 @@ public class CommentRes {
         this.toUserId = comment.getToUserId();
         this.fromUserId = comment.getFromUserId();
         this.comment = comment.getComment();
+        this.createTime = comment.getCreateDate();
     }
 
     public String getZone() {
@@ -78,5 +85,13 @@ public class CommentRes {
 
     public void setToName(String toName) {
         ToName = toName;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }
