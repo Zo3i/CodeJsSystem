@@ -136,10 +136,20 @@ $("#inputForm").validate({
 
 function check() {
 	$('#questionTaskDataGrid tr:gt(0)').each(function(idx,tr){
+		//重命名name
 		$(tr).find('input').each(function(idx2,td){
 			var filedName = $(this).parent().attr('aria-describedby').replace('questionTaskDataGrid_','')
 			$(this).attr('name','questionTasksList['+idx+'].' + filedName);
 		});
+
+		//保存之前删除前后的空格
+		$(tr).find('input').each(function(idx2,td){
+			var filedName = $(this).parent().attr('aria-describedby').replace('questionTaskDataGrid_','')
+			var func = $("input[name='questionTasksList[" + idx +"].task").val().split("=")[0].trim()
+			var answer = $("input[name='questionTasksList[" + idx +"].task").val().split("=")[1].trim()
+			$("input[name='questionTasksList[" + idx +"].task").val(func + '=' + answer)
+		});
+
 	});
 	console.log($('#questionInit').val())
 	$('#questionInit').val().replace(/\r\n/g, ',')
