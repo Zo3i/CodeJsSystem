@@ -99,6 +99,14 @@
 			<scope>system</scope>
 			<systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/test-core-1.0.jar</systemPath>
 		</dependency> -->
+
+		<!-- https://mvnrepository.com/artifact/com.eclipsesource.j2v8/j2v8_win32_x86_64 -->
+		<dependency>
+			<groupId>com.eclipsesource.j2v8</groupId>
+			<artifactId>j2v8_win32_x86_64</artifactId>
+			<version>4.6.0</version>
+		</dependency>
+
 		
 	</dependencies>
 	

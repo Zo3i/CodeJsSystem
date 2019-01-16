@@ -38,6 +38,7 @@ public class Question extends DataEntity<Question> {
 	private Date createTime;
 
 	private List<QuestionTasks> questionTasksList = ListUtils.newArrayList();
+	private String answerType;
 	
 	public Question() {
 		this(null);
@@ -95,5 +96,13 @@ public class Question extends DataEntity<Question> {
 
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
+	}
+
+	public String getAnswerType() {
+		return answerType;
+	}
+
+	public void setAnswerType(String answerType) {
+		this.answerType = answerType;
 	}
 }

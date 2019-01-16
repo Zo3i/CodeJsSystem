@@ -2,6 +2,7 @@ package com.jeesite.modules.js.web;
 
 import com.jeesite.common.service.ServiceException;
 import com.jeesite.modules.common.utils.BeanUtils;
+import com.jeesite.modules.common.utils.ExcuteScriptUtil;
 import com.jeesite.modules.common.utils.PasswordUtil;
 import com.jeesite.modules.common.utils.RedisUtils;
 import com.jeesite.modules.js.entity.*;
@@ -120,7 +121,6 @@ public class ThirdController {
         return question;
     }
 
-    ;
 
     /***
      * 保存前端传来的答案 18.12.4
@@ -391,22 +391,32 @@ public class ThirdController {
     @RequestMapping("/jointeam")
     public String jointeam(@RequestBody TeamInfo teamInfo) {
 
-        TeamInfo team = teamInfoService.findList(teamInfo).get(0);
-        TeamMember teamMember = new TeamMember();
-
-        if (StringUtils.isNotBlank(teamInfo.getMobile())) {
-            JsUser user = getUserByMobile(teamInfo.getMobile());
-            teamMember.setUserId(user.getId());
-            List<TeamMember> teamMemberList = teamMemberService.findList(teamMember);
-            if (teamMemberList.size() == 0) {
-                teamMember.setTeamId(team.getId());
-                teamMemberService.insert(teamMember);
-            } else {
-                return "你已经在小队了!";
+        if (StringUtils.isNotBlank(teamInfo.getTeamName())) {
+            List<TeamInfo> teamList = teamInfoService.findList(teamInfo);
+            TeamMember teamMember = new TeamMember();
+            if (teamList.size() != 0) {
+               TeamInfo team = teamList.get(0);
+               if (StringUtils.isNotBlank(teamInfo.getMobile())) {
+                    JsUser user = getUserByMobile(teamInfo.getMobile());
+                    teamMember.setUserId(user.getId());
+                    List<TeamMember> teamMemberList = teamMemberService.findList(teamMember);
+                    if (teamMemberList.size() == 0) {
+                        teamMember.setTeamId(team.getId());
+                        teamMemberService.insert(teamMember);
+                    } else {
+                        return "你已经在小队了!";
+                    }
+                } else {
+                    return "手机不能为空!";
+                }
+                }  else {
+                return "此队伍不存在!";
             }
-        } else {
-            return "请填写你要加入的队伍!";
-        }
+            }  else {
+                    return "请填写你要加入的队伍!";
+                }
+
+
         return "已加入小队!";
     }
 
