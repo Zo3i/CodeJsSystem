@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Param;
 /**
  * js_question_tasksDAO接口
  * @author jo
- * @version 2018-11-02
+ * @version 2019-01-22
  */
 @MyBatisDao
 public interface QuestionTasksDao extends CrudDao<QuestionTasks> {

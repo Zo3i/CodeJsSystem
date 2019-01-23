@@ -7,7 +7,6 @@ import java.util.List;
 
 import com.jeesite.modules.js.dao.QuestionTasksDao;
 import com.jeesite.modules.js.entity.QuestionTasks;
-import com.jeesite.modules.js.entity.other.QuestionRes;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -91,7 +90,9 @@ public class QuestionService extends CrudService<QuestionDao, Question> {
 		questionTasksDao.del(question.getId());
 		for (QuestionTasks questionTasks : question.getQuestionTasksList()) {
 			questionTasks.setQuestionId(question.getId());
-			questionTasks.setTask(StringEscapeUtils.unescapeHtml4(questionTasks.getTask()));
+//			questionTasks.setTask(StringEscapeUtils.unescapeHtml4(questionTasks.getTask()));
+			questionTasks.setTaskAnswer(StringEscapeUtils.unescapeHtml4(questionTasks.getTaskAnswer()));
+			questionTasks.setTaskQuestion(StringEscapeUtils.unescapeHtml4(questionTasks.getTaskQuestion()));
 			questionTasksDao.insert(questionTasks);
 		}
 	}

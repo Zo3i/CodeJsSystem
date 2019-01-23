@@ -11,7 +11,9 @@
 		</where>
 		ORDER BY ${sqlMap.order.toSql()}
 	</select> -->
+
 	<select id="del">
 		delete from js_question_tasks where question_id = #{questionId}
 	</select>
+	
 </mapper>

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.jeesite.common.entity.DataEntity;
 import com.jeesite.modules.js.entity.QuestionTasks;
 import com.jeesite.modules.js.service.QuestionTasksService;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -110,6 +111,8 @@ public class QuestionController extends BaseController {
 		if (itemCnt < 3) {
 			return renderResult(Global.FALSE, text("最少3个题目"));
 		}
+		String questiondes = question.getDescription();
+		question.setDescription(StringEscapeUtils.unescapeHtml4(questiondes));
 		questionService.save(question);
 
 		//删除原有的task

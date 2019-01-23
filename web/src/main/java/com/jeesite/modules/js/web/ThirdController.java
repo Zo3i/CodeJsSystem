@@ -16,6 +16,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 /***
@@ -670,6 +671,51 @@ public class ThirdController {
         return "收到你的留言咯!";
     }
 
+    /***
+     * 队伍排行榜
+     */
+    @ResponseBody
+    @RequestMapping("/rank")
+    public List<RankRes> rank () {
 
+       List<TeamInfo> teamInfos = teamInfoService.findList(new TeamInfo());
+       List<RankRes> list = new ArrayList<>();
 
+       for (TeamInfo t : teamInfos) {
+
+        TeamMember s = new TeamMember();
+        s.setTeamId(t.getId());
+        List<TeamMember> teamMembers = teamMemberService.findList(s);
+
+        //最佳队员
+        Collections.sort(teamMembers, new Comparator<TeamMember>() {
+            @Override
+            public int compare(TeamMember o1, TeamMember o2) {
+                return (jsUserService.get(o1.getUserId()).getRank() - jsUserService.get(o2.getUserId()).getRank()) > 0 ? -1 : 1;
+            }
+        });
+
+        Integer sum = 0;
+        for (TeamMember e : teamMembers) {
+            JsUser jsUser = jsUserService.get(e.getUserId());
+            sum += jsUser.getRank();
+        }
+        JsUser best = jsUserService.get(teamMembers.get(0).getUserId());
+
+        RankRes r = new RankRes();
+        r.setBest(best.getName());
+        r.setName(t.getTeamName());
+        r.setTotalRank(sum);
+        list.add(r);
+       }
+
+        //总分排序
+        Collections.sort(list, new Comparator<RankRes>() {
+            @Override
+            public int compare(RankRes o1, RankRes o2) {
+                return (o1.getTotalRank() - o2.getTotalRank()) > 0 ? -1 : 1;
+            }
+        });
+       return list;
+    }
 }

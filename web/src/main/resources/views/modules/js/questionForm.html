@@ -92,8 +92,9 @@ $("#questionTaskDataGrid").dataGrid({
 	columnModel: [
 		{header:'主键', name:'id', editable:true, hidden:true},
 		{header:'状态', name:'status', editable:true, hidden:true},
-		{header:'${text('questionId')}', name:'question.id', editable:true, hidden:true},
-		{header:'${text('问题')}', name:'task', width:150, editable:true, edittype:'text', editoptions:{'maxlength':'500', 'class':'form-control'}},
+		{header:'${text('questionId')}', name:'questionId', editable:true, hidden:true},
+		{header:'${text('问题')}', name:'taskQuestion', width:150, editable:true, edittype:'text', editoptions:{'maxlength':'500', 'class':'form-control'}},
+		{header:'${text('答案')}', name:'taskAnswer', width:150, editable:true, edittype:'text', editoptions:{'maxlength':'500', 'class':'form-control'}},
 		{header:'${text('操作')}', name:'actions', width:80, sortable:false, fixed:true, align:'center', formatter: function(val, obj, row, act){
                 var actions = [];
                 if (val == 'new') {
@@ -112,7 +113,7 @@ $("#questionTaskDataGrid").dataGrid({
 
 	// 编辑表格的提交数据参数
 	editGridInputFormListName: 'questionTasksList', // 提交的数据列表名
-	editGridInputFormListAttrs: 'id,question.id,status,task,', // 提交数据列表的属性字段 ,itemPic
+	editGridInputFormListAttrs: 'id,questionId,status,taskQuestion, taskAnswer,', // 提交数据列表的属性字段 ,itemPic
 
 	// 加载成功后执行事件
 	ajaxSuccess: function(data){
@@ -142,12 +143,13 @@ function check() {
 			$(this).attr('name','questionTasksList['+idx+'].' + filedName);
 		});
 
-		//保存之前删除前后的空格
+		// 保存之前删除前后的空格
 		$(tr).find('input').each(function(idx2,td){
 			var filedName = $(this).parent().attr('aria-describedby').replace('questionTaskDataGrid_','')
-			var func = $("input[name='questionTasksList[" + idx +"].task").val().split("=")[0].trim()
-			var answer = $("input[name='questionTasksList[" + idx +"].task").val().split("=")[1].trim()
-			$("input[name='questionTasksList[" + idx +"].task").val(func + '=' + answer)
+			var question = $("input[name='questionTasksList[" + idx +"].taskQuestion").val().trim()
+			var answer = $("input[name='questionTasksList[" + idx +"].taskAnswer").val().trim()
+			$("input[name='questionTasksList[" + idx +"].taskQuestion").val(question)
+			$("input[name='questionTasksList[" + idx +"].taskAnswer").val(answer)
 		});
 
 	});
