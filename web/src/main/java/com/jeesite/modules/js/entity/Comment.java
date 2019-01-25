@@ -35,6 +35,7 @@ public class Comment extends DataEntity<Comment> {
 	private String comment;		// 评论内容
 
 	private String fromMobile;
+	private String token;
 
 
 
@@ -97,5 +98,13 @@ public class Comment extends DataEntity<Comment> {
 
 	public void setFromMobile(String fromMobile) {
 		this.fromMobile = fromMobile;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 }

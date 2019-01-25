@@ -7,6 +7,7 @@ import com.jeesite.common.dao.CrudDao;
 import com.jeesite.common.mybatis.annotation.MyBatisDao;
 import com.jeesite.modules.js.entity.Question;
 import com.jeesite.modules.js.entity.other.QuestionRes;
+import com.jeesite.modules.js.entity.other.QuestionSearchRes;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -21,4 +22,5 @@ import java.util.List;
 public interface QuestionDao extends CrudDao<Question> {
 	Question getRandomQuestion(@Param("userId") String userId);
 	List<Question> getAllQuestion(@Param("userId") String userId);
+	List<QuestionSearchRes> queryByScore(@Param("userId") String userId, @Param("low") Integer low, @Param("high") Integer high);
 }

@@ -30,6 +30,7 @@ public class TeamInfo extends DataEntity<TeamInfo> {
 	private String teamCreatorId;		// team_creator_id
 	private Long rank;		// rank
 	private String mobile;
+	private String token;
 	
 	public TeamInfo() {
 		this(null);
@@ -71,5 +72,13 @@ public class TeamInfo extends DataEntity<TeamInfo> {
 
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 }

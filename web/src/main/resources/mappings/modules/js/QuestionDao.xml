@@ -25,4 +25,12 @@
 	<select id="getAllQuestion" resultType="Question">
 		SELECT a.create_date createTime, q.`name` name, q.score score from js_answer a  LEFT JOIN js_question q on q.id = a.question_id  where  a.user_id = #{userId}
 	</select>
+
+	<!--按难度查询问题-->
+	<select id="queryByScore">
+		select q.name, q.score, c.num from js_question q LEFT join
+		(SELECT question_id, count(*) as num from js_completed GROUP BY question_id) c
+		on q.id = c.question_id where q.id not in
+        (SELECT question_id from js_completed where user_id = #{userId}) and q.score <![CDATA[ >= ]]> #{low} and q.score <![CDATA[ <= ]]> #{hight}
+	</select>
 </mapper>

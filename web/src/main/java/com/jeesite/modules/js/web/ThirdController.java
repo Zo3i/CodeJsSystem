@@ -88,6 +88,20 @@ public class ThirdController {
     }
 
     /***
+     * 通过token找用户
+     */
+    public JsUser getUserByToken(String token) {
+        JsUser jsUser = new JsUser();
+        LoginRsp loginRsp = redisUtils.getSession(token);
+        if (loginRsp != null) {
+            jsUser.setMobile(loginRsp.getMobile());
+            List<JsUser> list = jsUserService.findList(jsUser);
+            return list.get(0);
+        }
+        return null;
+    }
+
+    /***
      * 获取随机一个题目
      */
     @RequestMapping("/getRandomQuestion")
@@ -397,8 +411,8 @@ public class ThirdController {
             TeamMember teamMember = new TeamMember();
             if (teamList.size() != 0) {
                TeamInfo team = teamList.get(0);
-               if (StringUtils.isNotBlank(teamInfo.getMobile())) {
-                    JsUser user = getUserByMobile(teamInfo.getMobile());
+               if (StringUtils.isNotBlank(teamInfo.getToken())) {
+                    JsUser user = getUserByToken(teamInfo.getToken());
                     teamMember.setUserId(user.getId());
                     List<TeamMember> teamMemberList = teamMemberService.findList(teamMember);
                     if (teamMemberList.size() == 0) {
@@ -408,7 +422,7 @@ public class ThirdController {
                         return "你已经在小队了!";
                     }
                 } else {
-                    return "手机不能为空!";
+                    return "token不能为空!";
                 }
                 }  else {
                 return "此队伍不存在!";
@@ -416,8 +430,6 @@ public class ThirdController {
             }  else {
                     return "请填写你要加入的队伍!";
                 }
-
-
         return "已加入小队!";
     }
 
@@ -640,6 +652,9 @@ public class ThirdController {
     public List<CommentRes> getComment (String zoneId) {
        Comment comment = new Comment();
        comment.setZone(zoneId);
+       if (StringUtils.isBlank(zoneId)) {
+           return null;
+       }
 
        List<Comment> list = commentService.findList(comment);
        List<CommentRes> commentResList = BeanUtils.tran(list, CommentRes.class);
@@ -660,8 +675,8 @@ public class ThirdController {
     @RequestMapping("/leaveComment")
     public String leaveComment (@RequestBody Comment comment) {
 
-        String fromMobile = comment.getFromMobile();
-        JsUser fromUser = getUserByMobile(fromMobile);
+        String token = comment.getToken();
+        JsUser fromUser = getUserByToken(token);
         comment.setFromUserId(fromUser.getId());
 
         if (StringUtils.isBlank(comment.getComment())) {
@@ -698,7 +713,9 @@ public class ThirdController {
         Integer sum = 0;
         for (TeamMember e : teamMembers) {
             JsUser jsUser = jsUserService.get(e.getUserId());
-            sum += jsUser.getRank();
+            jsUser.getName();
+            Integer score = jsUser.getRank() == null ? 0 : jsUser.getRank();
+            sum += score;
         }
         JsUser best = jsUserService.get(teamMembers.get(0).getUserId());
 
@@ -706,6 +723,7 @@ public class ThirdController {
         r.setBest(best.getName());
         r.setName(t.getTeamName());
         r.setTotalRank(sum);
+        r.setCount(teamMembers.size());
         list.add(r);
        }
 
@@ -713,9 +731,31 @@ public class ThirdController {
         Collections.sort(list, new Comparator<RankRes>() {
             @Override
             public int compare(RankRes o1, RankRes o2) {
-                return (o1.getTotalRank() - o2.getTotalRank()) > 0 ? -1 : 1;
+                return compareRank(o1.getTotalRank(), o2.getTotalRank());
             }
         });
        return list;
     }
+
+    /***
+     * 按难度查询问题
+     */
+//    @ResponseBody
+//    @RequestMapping("getQuestions")
+//    public List<QuestionSearchRes> getQuestions(@RequestBody QuestionSearchRes res) {
+//        JsUser user = getUserByMobile(res.getMobile());
+//        List<QuestionSearchRes> list = questionService.queryByScore(user.getId(), res.getLowRank(), res.getHighRank());
+//
+//    }
+
+    public int compareRank(Integer o1, Integer o2) {
+        if(o1 > o2) {
+            return -1;
+        }
+        if(o2 > o1) {
+            return 1;
+        }
+        return 0;
+    }
+
 }

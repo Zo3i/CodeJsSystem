@@ -5,6 +5,7 @@ public class RankRes {
     private String name;
     private String best;
     private Integer TotalRank;
+    private Integer count;
 
     public String getName() {
         return name;
@@ -28,5 +29,13 @@ public class RankRes {
 
     public void setTotalRank(Integer totalRank) {
         TotalRank = totalRank;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
     }
 }
