@@ -1,6 +1,9 @@
 package com.jeesite.modules.js.web;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.eclipsesource.v8.V8;
+import com.eclipsesource.v8.V8Object;
 import com.jeesite.common.service.ServiceException;
 import com.jeesite.modules.common.utils.BeanUtils;
 import com.jeesite.modules.common.utils.ExcuteScriptUtil;
@@ -16,8 +19,9 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 /***
@@ -776,6 +780,57 @@ public class ThirdController {
             s.setPassword(md5Password);
             jsUserService.update(s);
         }
+    }
+
+
+    /***
+     * 判断用户回答是否正确;
+     * @param userAnswerRes
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/isRight")
+    public ReturnRes isRight(@RequestBody UserAnswerRes userAnswerRes) {
+
+        ReturnRes res = new ReturnRes();
+        Boolean isWrong = true;
+        Boolean isRight = null;
+        String userAnswer = "";
+        String rightAnswer = "";
+
+        //获取问题信息
+        Question question = questionService.get(userAnswerRes.getQuestionId());
+
+        V8 runtime = V8.createV8Runtime();
+        String task = "JSON.stringify(" + userAnswerRes.getTask() + ")";
+
+        String userScript = userAnswerRes.getUseranswer() + task;
+        String rightScript = question.getRightAnswer() +task;
+
+        try {
+            userAnswer = runtime.executeStringScript(userScript);
+            rightAnswer = runtime.executeStringScript(rightScript);
+            if (userAnswer.equals(rightAnswer)) {
+                isRight = true;
+            } else {
+                isRight = false;
+            }
+        } catch (Exception e) {
+            res.setWrong(isWrong);
+            if (StringUtils.isBlank(e.getMessage())) {
+               res.setAnswer("无返回值!");
+            } else {
+                res.setAnswer(e.getMessage());
+            }
+		    return res;
+        }
+        runtime.release();
+
+        isWrong = false;
+        res.setAnswer(userAnswer);
+        res.setWrong(isWrong);
+        res.setRight(isRight);
+        return res;
     }
 
 }

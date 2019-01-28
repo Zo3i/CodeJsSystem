@@ -113,6 +113,7 @@ public class QuestionController extends BaseController {
 		}
 		String questiondes = question.getDescription();
 		question.setDescription(StringEscapeUtils.unescapeHtml4(questiondes));
+		question.setRightAnswer(StringEscapeUtils.unescapeHtml4(question.getRightAnswer()));
 		questionService.save(question);
 
 		//删除原有的task

@@ -3,6 +3,7 @@
  */
 package com.jeesite.modules.js.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jeesite.common.collect.ListUtils;
 import org.hibernate.validator.constraints.Length;
 
@@ -24,6 +25,7 @@ import java.util.List;
 		@Column(name="name", attrName="name", label="name", queryType=QueryType.LIKE),
 		@Column(name="score", attrName="score", label="score"),
 		@Column(name="question_init", attrName="questionInit", label="questionInit"),
+		@Column(name="right_answer", attrName="rightAnswer", label="rightAnswer"),
 		@Column(name="description", attrName="description", label="description"),
 		@Column(includeEntity=DataEntity.class),
 	}, orderBy="a.update_date DESC"
@@ -38,7 +40,8 @@ public class Question extends DataEntity<Question> {
 	private Date createTime;
 
 	private List<QuestionTasks> questionTasksList = ListUtils.newArrayList();
-	private String answerType;
+
+	private String rightAnswer;
 	
 	public Question() {
 		this(null);
@@ -98,11 +101,11 @@ public class Question extends DataEntity<Question> {
 		this.createTime = createTime;
 	}
 
-	public String getAnswerType() {
-		return answerType;
+	public String getRightAnswer() {
+		return rightAnswer;
 	}
 
-	public void setAnswerType(String answerType) {
-		this.answerType = answerType;
+	public void setRightAnswer(String rightAnswer) {
+		this.rightAnswer = rightAnswer;
 	}
 }
