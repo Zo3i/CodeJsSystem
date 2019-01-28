@@ -32,7 +32,9 @@ public class PasswordUtil {
      * @return
      */
     public static boolean valid(String pwdMd5, Long phone, String pwdDB) {
-        return DigestUtils.md5Hex(pwdMd5 + String.valueOf(phone % 1000000)).equals(pwdDB);
+        String salt = String.valueOf(phone % 1000000);
+        String userPass = DigestUtils.md5Hex(pwdMd5 + salt);
+        return userPass.equals(pwdDB);
     }
 
 }

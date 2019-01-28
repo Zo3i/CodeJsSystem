@@ -1,5 +1,6 @@
 package com.jeesite.modules.js.web;
 
+import com.alibaba.fastjson.JSONObject;
 import com.jeesite.common.service.ServiceException;
 import com.jeesite.modules.common.utils.BeanUtils;
 import com.jeesite.modules.common.utils.ExcuteScriptUtil;
@@ -177,14 +178,14 @@ public class ThirdController {
      * 登录
      */
     @RequestMapping("/login")
-    public LoginRsp login(@RequestBody JsUser user) {
+    public LoginRsp login(String password, String mobile) {
 
         JsUser temp = new JsUser();
-        temp.setMobile(user.getMobile());
+        temp.setMobile(mobile);
         List<JsUser> dbUser = jsUserService.findList(temp);
         if (dbUser.size() != 0) {
             String DbPassWord = dbUser.get(0).getPassword();
-            Boolean isPass = PasswordUtil.valid(user.getPassword(), Long.parseLong(user.getMobile()), DbPassWord);
+            Boolean isPass = PasswordUtil.valid(password, Long.parseLong(mobile), DbPassWord);
             if (isPass) {
                 String token = UUID.randomUUID().toString();
                 LoginRsp loginRsp = new LoginRsp(token, dbUser.get(0));
@@ -202,9 +203,15 @@ public class ThirdController {
      * 注册
      */
     @RequestMapping("/sign")
-    public String sign(@RequestBody JsUser user) {
+    public String sign(String password, String mobile, String name) {
+        JsUser user = new JsUser();
+        user.setMobile(mobile);
+        user.setPassword(password);
+        user.setName(name);
+
+
         JsUser temp = new JsUser();
-        temp.setMobile(user.getMobile());
+        temp.setMobile(mobile);
         if (jsUserService.findList(temp).size() > 0) {
             return "该手机号码已被使用!";
         }
@@ -353,6 +360,7 @@ public class ThirdController {
     @ResponseBody
     @RequestMapping("/teamall")
     public List<TeamMember> teamall(String teamid) {
+//        repass();
         TeamMember teamMember = new TeamMember();
         if (StringUtils.isNotBlank(teamid)) {
             teamMember.setTeamId(teamid);
@@ -756,6 +764,18 @@ public class ThirdController {
             return 1;
         }
         return 0;
+    }
+
+
+    //重置所有用户密码为123456
+    public void repass() {
+        String pass = "e10adc3949ba59abbe56e057f20f883e";
+        List<JsUser> users = jsUserService.findList(new JsUser());
+        for (JsUser s : users) {
+            String md5Password = PasswordUtil.getMd5PasswordOnce(pass, Long.parseLong(s.getMobile()));
+            s.setPassword(md5Password);
+            jsUserService.update(s);
+        }
     }
 
 }
