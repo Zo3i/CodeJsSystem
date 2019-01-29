@@ -14,6 +14,7 @@ import com.jeesite.modules.js.entity.other.*;
 import com.jeesite.modules.js.service.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -124,6 +125,7 @@ public class ThirdController {
             List<QuestionTasks> tasks = questionTasksService.findList(questionTasks);
             question.setQuestionTasksList(tasks);
         }
+        question.setRightAnswer("别想偷看答案了!");
         return question;
     }
 
@@ -138,6 +140,7 @@ public class ThirdController {
         questionTasks.setQuestionId(id);
         List<QuestionTasks> tasks = questionTasksService.findList(questionTasks);
         question.setQuestionTasksList(tasks);
+        question.setRightAnswer("别想偷看答案了!");
         return question;
     }
 
@@ -253,6 +256,7 @@ public class ThirdController {
 
         for (AnswerRes s : answerResList) {
             Question question = questionService.get(s.getQuestionId());
+            question.setRightAnswer("别想偷看答案了!");
             JsUser user = jsUserService.get(s.getUserId());
             Integer collectNum = collectService.findList(new Collect(s.getId())).size();
             Integer likeNum = likeService.findList(new Like(s.getId())).size();
@@ -484,6 +488,7 @@ public class ThirdController {
 
             for (AnswerRes s : answerResList) {
                 Question question = questionService.get(s.getQuestionId());
+                question.setRightAnswer("别想偷看答案了!");
                 JsUser user = jsUserService.get(s.getUserId());
                 Integer collectNum = collectService.findList(new Collect(s.getId())).size();
                 Integer likeNum = likeService.findList(new Like(s.getId())).size();
@@ -529,6 +534,7 @@ public class ThirdController {
 
             for (AnswerRes s : answerResList) {
                 Question question = questionService.get(s.getQuestionId());
+                question.setRightAnswer("别想偷看答案了!");
                 JsUser user = jsUserService.get(s.getUserId());
                 Integer collectNum = collectService.findList(new Collect(s.getId())).size();
                 Integer likeNum = likeService.findList(new Like(s.getId())).size();
@@ -575,6 +581,7 @@ public class ThirdController {
 
             for (AnswerRes s : answerResList) {
                 Question question = questionService.get(s.getQuestionId());
+                question.setRightAnswer("别想偷看答案了!");
                 JsUser user = jsUserService.get(s.getUserId());
                 Integer collectNum = collectService.findList(new Collect(s.getId())).size();
                 Integer likeNum = likeService.findList(new Like(s.getId())).size();
@@ -802,11 +809,26 @@ public class ThirdController {
         Question question = questionService.get(userAnswerRes.getQuestionId());
 
         V8 runtime = V8.createV8Runtime();
+
+        //定时释放内存
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                   Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                   e.printStackTrace();
+            }
+            System.out.println("Shutting down");
+            runtime.terminateExecution();
+        }
+    }).start();
+
         String task = "JSON.stringify(" + userAnswerRes.getTask() + ")";
 
         String userScript = userAnswerRes.getUseranswer() + task;
         String rightScript = question.getRightAnswer() +task;
-
         try {
             userAnswer = runtime.executeStringScript(userScript);
             rightAnswer = runtime.executeStringScript(rightScript);
@@ -820,7 +842,11 @@ public class ThirdController {
             if (StringUtils.isBlank(e.getMessage())) {
                res.setAnswer("无返回值!");
             } else {
-                res.setAnswer(e.getMessage());
+                if ("null".equals(e.getMessage())) {
+                    res.setAnswer("编译超时了,检查下代码吧;");
+                } else {
+                    res.setAnswer(e.getMessage());
+                }
             }
 		    return res;
         }
