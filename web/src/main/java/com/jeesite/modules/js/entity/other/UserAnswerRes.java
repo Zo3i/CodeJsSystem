@@ -5,6 +5,7 @@ public class UserAnswerRes {
     private String questionId;
     private String task;
     private String rightAnswer;
+    private String token;
 
 
     public String getUseranswer() {
@@ -37,5 +38,13 @@ public class UserAnswerRes {
 
     public void setRightAnswer(String rightAnswer) {
         this.rightAnswer = rightAnswer;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

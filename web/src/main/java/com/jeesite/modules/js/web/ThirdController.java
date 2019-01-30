@@ -55,6 +55,8 @@ public class ThirdController {
     private TeamMemberService teamMemberService;
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private ResultRecordService resultRecordService;
 
     public static final String AUTHORIZATION = "Authorization";
 
@@ -150,6 +152,26 @@ public class ThirdController {
      */
     @RequestMapping("/saveAnswer")
     public String saveAnswer(@RequestBody Answer answer) {
+
+        /***
+         * 后端验证答案是否正确;19.1.29 by jo
+         */
+        String mobile = answer.getUserMobile();
+        String questionId = answer.getQuestionId();
+
+        ResultRecord record = new ResultRecord();
+        QuestionTasks questionTasks = new QuestionTasks();
+        questionTasks.setQuestionId(questionId);
+        record.setQuestionId(questionId);
+        record.setMobile(mobile);
+        List<ResultRecord> list = resultRecordService.findList(record);
+        List<QuestionTasks> tasks = questionTasksService.findList(questionTasks);
+
+        if (list.size() < tasks.size()) {
+            return "别想那么多花里胡哨的东西啦,安心答题!";
+        }
+
+
         JsUser user = new JsUser();
         user.setMobile(answer.getUserMobile());
         JsUser temp = jsUserService.findList(user).get(0);
@@ -173,6 +195,7 @@ public class ThirdController {
                 temp.setRank(temp.getRank() + rank);
                 jsUserService.save(temp);
                 answerService.save(answer);
+                resultRecordService.del(questionId);
             } else {
                 return "您已经回答过了!";
             }
@@ -396,7 +419,7 @@ public class ThirdController {
 
         JsUser jsUser = getUserByMobile(teamInfo.getMobile());
         if (StringUtils.isNotBlank(teamInfo.getTeamName())) {
-            if (teamInfoService.queryByName(teamInfo.getTeamName()) == null) {
+            if (teamInfoService.queryByName(teamInfo.getTeamName()) == null && teamInfoService.queryByUserId(jsUser.getId()) == null) {
                 teamInfo.setRank(Long.valueOf(0));
                 teamInfo.setTeamCreatorId(jsUser.getId());
                 teamInfoService.insert(teamInfo);
@@ -799,6 +822,7 @@ public class ThirdController {
     @RequestMapping("/isRight")
     public ReturnRes isRight(@RequestBody UserAnswerRes userAnswerRes) {
 
+        JsUser user = getUserByToken(userAnswerRes.getToken());
         ReturnRes res = new ReturnRes();
         Boolean isWrong = true;
         Boolean isRight = null;
@@ -834,7 +858,15 @@ public class ThirdController {
             rightAnswer = runtime.executeStringScript(rightScript);
             if (userAnswer.equals(rightAnswer)) {
                 isRight = true;
+                if (user != null) {
+                    ResultRecord record = new ResultRecord();
+                    record.setMobile(user.getMobile());
+                    record.setQuestionId(userAnswerRes.getQuestionId());
+                    record.setResult("true");
+                    resultRecordService.save(record);
+                }
             } else {
+                resultRecordService.del(question.getId());
                 isRight = false;
             }
         } catch (Exception e) {
