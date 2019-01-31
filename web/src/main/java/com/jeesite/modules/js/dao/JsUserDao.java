@@ -6,6 +6,9 @@ package com.jeesite.modules.js.dao;
 import com.jeesite.common.dao.CrudDao;
 import com.jeesite.common.mybatis.annotation.MyBatisDao;
 import com.jeesite.modules.js.entity.JsUser;
+import com.jeesite.modules.js.entity.other.UserRankRes;
+
+import java.util.List;
 
 /**
  * jsUserDAO接口
@@ -14,5 +17,5 @@ import com.jeesite.modules.js.entity.JsUser;
  */
 @MyBatisDao
 public interface JsUserDao extends CrudDao<JsUser> {
-	
+	List<UserRankRes> getUserRank();
 }

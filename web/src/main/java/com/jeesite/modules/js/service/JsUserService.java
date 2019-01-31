@@ -5,6 +5,8 @@ package com.jeesite.modules.js.service;
 
 import java.util.List;
 
+import com.jeesite.modules.js.entity.other.UserRankRes;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +24,10 @@ import com.jeesite.modules.file.utils.FileUploadUtils;
 @Service
 @Transactional(readOnly=true)
 public class JsUserService extends CrudService<JsUserDao, JsUser> {
-	
+
+	@Autowired
+	private JsUserDao jsUserDao;
+
 	/**
 	 * 获取单条数据
 	 * @param jsUser
@@ -74,6 +79,11 @@ public class JsUserService extends CrudService<JsUserDao, JsUser> {
 	@Transactional(readOnly=false)
 	public void delete(JsUser jsUser) {
 		super.delete(jsUser);
+	}
+
+	@Transactional(readOnly=false)
+	public List<UserRankRes> getUserRank() {
+		return jsUserDao.getUserRank();
 	}
 	
 }

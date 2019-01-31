@@ -891,4 +891,13 @@ public class ThirdController {
         return res;
     }
 
+    /***
+     * 所有人排行榜
+     */
+    @ResponseBody
+    @RequestMapping("/userRank")
+    public List<UserRankRes> userRank() {
+        return jsUserService.getUserRank();
+    }
+
 }

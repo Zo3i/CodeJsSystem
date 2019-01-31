@@ -1,0 +1,15 @@
+server:
+  port: 8090
+  context-path: /rxMgr
+  tomcat:
+    uri-encoding: UTF-8
+
+spring:
+  profiles: 
+    active: local
+  main: 
+    banner-mode: "off"
+
+shiro: 
+  filterChainDefinitions: 
+    ${adminPath}/third/** = anon

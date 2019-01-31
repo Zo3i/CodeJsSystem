@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jeesite.modules.js.dao.JsUserDao">
+<mapper namespace="com.jeesite.modules.js.dao.ResultRecordDao">
 	
 	<!-- 查询数据
-	<select id="findList" resultType="JsUser">
+	<select id="findList" resultType="ResultRecord">
 		SELECT ${sqlMap.column.toSql()}
 		FROM ${sqlMap.table.toSql()}
 		<where>
@@ -11,12 +11,7 @@
 		</where>
 		ORDER BY ${sqlMap.order.toSql()}
 	</select> -->
-
-	<select id="getUserRank" resultType="map">
-		SELECT u.name, u.rank, ifnull(t.team_name, '暂无') as teamName from js_user u
-		LEFT JOIN js_team_member m on u.id = m.user_id
-		LEFT JOIN js_team_info t ON  m.team_id = t.id
-		ORDER BY u.rank DESC
+	<select id="del" >
+		DELETE FROM js_result_record WHERE question_id = #{questionId}
 	</select>
-	
 </mapper>
