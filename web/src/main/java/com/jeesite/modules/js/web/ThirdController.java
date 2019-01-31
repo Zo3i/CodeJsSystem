@@ -126,8 +126,8 @@ public class ThirdController {
             questionTasks.setQuestionId(questionId);
             List<QuestionTasks> tasks = questionTasksService.findList(questionTasks);
             question.setQuestionTasksList(tasks);
+            question.setRightAnswer("别想偷看答案了!");
         }
-        question.setRightAnswer("别想偷看答案了!");
         return question;
     }
 
