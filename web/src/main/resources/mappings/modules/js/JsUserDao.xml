@@ -13,7 +13,7 @@
 	</select> -->
 
 	<select id="getUserRank" resultType="map">
-		SELECT u.name, u.rank, ifnull(t.team_name, '暂无') as teamName from js_user u
+		SELECT u.name, u.rank, ifnull(t.team_name, '暂无') as teamName,u.zone_id zoneId from js_user u
 		LEFT JOIN js_team_member m on u.id = m.user_id
 		LEFT JOIN js_team_info t ON  m.team_id = t.id
 		ORDER BY u.rank DESC

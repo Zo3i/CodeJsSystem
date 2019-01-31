@@ -8,6 +8,7 @@ public class UserRankRes {
     private String name;
     private String teamName;
     private Integer rank;
+    private String zoneId;
 
     public String getName() {
         return name;
@@ -31,5 +32,13 @@ public class UserRankRes {
 
     public void setRank(Integer rank) {
         this.rank = rank;
+    }
+
+    public String getZoneId() {
+        return zoneId;
+    }
+
+    public void setZoneId(String zoneId) {
+        this.zoneId = zoneId;
     }
 }
