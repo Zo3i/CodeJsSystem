@@ -5,6 +5,8 @@ package com.jeesite.modules.js.service;
 
 import java.util.List;
 
+import com.jeesite.modules.js.entity.other.RankRes;
+import com.jeesite.modules.js.entity.other.TeamRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -88,6 +90,9 @@ public class TeamInfoService extends CrudService<TeamInfoDao, TeamInfo> {
 		return teamInfoDao.queryByUserId(userId);
 	};
 
-
+	@Transactional(readOnly=false)
+	public  List<RankRes> rank() {
+		return teamInfoDao.rank();
+	}
 
 }

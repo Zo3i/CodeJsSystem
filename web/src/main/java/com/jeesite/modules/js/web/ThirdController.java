@@ -457,6 +457,9 @@ public class ThirdController {
                     if (teamMemberList.size() == 0) {
                         teamMember.setTeamId(team.getId());
                         teamMemberService.insert(teamMember);
+                        //用户设置队伍ID
+                        user.setTeamId(team.getId());
+                        jsUserService.update(user);
                     } else {
                         return "你已经在小队了!";
                     }
@@ -735,48 +738,50 @@ public class ThirdController {
     @RequestMapping("/rank")
     public List<RankRes> rank () {
 
-       List<TeamInfo> teamInfos = teamInfoService.findList(new TeamInfo());
-       List<RankRes> list = new ArrayList<>();
+        return teamInfoService.rank();
 
-       for (TeamInfo t : teamInfos) {
-
-        TeamMember s = new TeamMember();
-        s.setTeamId(t.getId());
-        List<TeamMember> teamMembers = teamMemberService.findList(s);
-
-        //最佳队员
-        Collections.sort(teamMembers, new Comparator<TeamMember>() {
-            @Override
-            public int compare(TeamMember o1, TeamMember o2) {
-                return (jsUserService.get(o1.getUserId()).getRank() - jsUserService.get(o2.getUserId()).getRank()) > 0 ? -1 : 1;
-            }
-        });
-
-        Integer sum = 0;
-        for (TeamMember e : teamMembers) {
-            JsUser jsUser = jsUserService.get(e.getUserId());
-            jsUser.getName();
-            Integer score = jsUser.getRank() == null ? 0 : jsUser.getRank();
-            sum += score;
-        }
-        JsUser best = jsUserService.get(teamMembers.get(0).getUserId());
-
-        RankRes r = new RankRes();
-        r.setBest(best.getName());
-        r.setName(t.getTeamName());
-        r.setTotalRank(sum);
-        r.setCount(teamMembers.size());
-        list.add(r);
-       }
-
-        //总分排序
-        Collections.sort(list, new Comparator<RankRes>() {
-            @Override
-            public int compare(RankRes o1, RankRes o2) {
-                return compareRank(o1.getTotalRank(), o2.getTotalRank());
-            }
-        });
-       return list;
+//       List<TeamInfo> teamInfos = teamInfoService.findList(new TeamInfo());
+//       List<RankRes> list = new ArrayList<>();
+//
+//       for (TeamInfo t : teamInfos) {
+//
+//        TeamMember s = new TeamMember();
+//        s.setTeamId(t.getId());
+//        List<TeamMember> teamMembers = teamMemberService.findList(s);
+//
+//        //最佳队员
+//        Collections.sort(teamMembers, new Comparator<TeamMember>() {
+//            @Override
+//            public int compare(TeamMember o1, TeamMember o2) {
+//                return (jsUserService.get(o1.getUserId()).getRank() - jsUserService.get(o2.getUserId()).getRank()) > 0 ? -1 : 1;
+//            }
+//        });
+//
+//        Integer sum = 0;
+//        for (TeamMember e : teamMembers) {
+//            JsUser jsUser = jsUserService.get(e.getUserId());
+//            jsUser.getName();
+//            Integer score = jsUser.getRank() == null ? 0 : jsUser.getRank();
+//            sum += score;
+//        }
+//        JsUser best = jsUserService.get(teamMembers.get(0).getUserId());
+//
+//        RankRes r = new RankRes();
+//        r.setBest(best.getName());
+//        r.setName(t.getTeamName());
+//        r.setTotalRank(sum);
+//        r.setCount(teamMembers.size());
+//        list.add(r);
+//       }
+//
+//        //总分排序
+//        Collections.sort(list, new Comparator<RankRes>() {
+//            @Override
+//            public int compare(RankRes o1, RankRes o2) {
+//                return compareRank(o1.getTotalRank(), o2.getTotalRank());
+//            }
+//        });
+//       return list;
     }
 
     /***
