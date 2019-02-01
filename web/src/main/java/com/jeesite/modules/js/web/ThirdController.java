@@ -92,7 +92,12 @@ public class ThirdController {
         JsUser jsUser = new JsUser();
         jsUser.setMobile(mobile);
         List<JsUser> list = jsUserService.findList(jsUser);
-        return list.get(0);
+        if (list.size() > 0) {
+            return list.get(0);
+        } else {
+            return null;
+        }
+
     }
 
     /***
@@ -785,17 +790,6 @@ public class ThirdController {
 //       return list;
     }
 
-    /***
-     * 按难度查询问题
-     */
-//    @ResponseBody
-//    @RequestMapping("getQuestions")
-//    public List<QuestionSearchRes> getQuestions(@RequestBody QuestionSearchRes res) {
-//        JsUser user = getUserByMobile(res.getMobile());
-//        List<QuestionSearchRes> list = questionService.queryByScore(user.getId(), res.getLowRank(), res.getHighRank());
-//
-//    }
-
     public int compareRank(Integer o1, Integer o2) {
         if(o1 > o2) {
             return -1;
@@ -904,6 +898,67 @@ public class ThirdController {
     @RequestMapping("/userRank")
     public List<UserRankRes> userRank() {
         return jsUserService.getUserRank();
+    }
+
+    /***
+     * 按难度查询问题
+     */
+    @ResponseBody
+    @RequestMapping("/getQuestions")
+    public List<QuestionSearchRes> getQuestions(String mobile,Integer lowRank, Integer highRank) {
+        JsUser user = getUserByMobile(mobile);
+        if (user != null) {
+            List<QuestionSearchRes> list = questionService.queryByScore(user.getId(), lowRank, highRank);
+            return list;
+        } else {
+            return null;
+        }
+    }
+
+    /***
+     * 按时间排序
+     */
+    @ResponseBody
+    @RequestMapping("/orderByArgs")
+    public List<QuestionSearchRes> orderByArgs(@RequestBody QuestionSearchRes res) {
+        JsUser user = getUserByMobile(res.getMobile());
+        res.setUserId(user.getId());
+        if (user != null) {
+            List<QuestionSearchRes> list = questionService.queryByArgs(res);
+            return list;
+        } else {
+            return null;
+        }
+    }
+
+    /***
+     * 按完成人数排序
+     */
+    @ResponseBody
+    @RequestMapping("/queryByComplete")
+    public List<QuestionSearchRes> queryByComplete(String mobile,Integer lowRank, Integer highRank) {
+        JsUser user = getUserByMobile(mobile);
+        if (user != null) {
+            List<QuestionSearchRes> list = questionService.queryByScore(user.getId(), lowRank, highRank);
+            return list;
+        } else {
+            return null;
+        }
+    }
+
+    /***
+     * 按分数排序
+     */
+    @ResponseBody
+    @RequestMapping("/queryByScore")
+    public List<QuestionSearchRes> queryByScore(String mobile,Integer lowRank, Integer highRank) {
+        JsUser user = getUserByMobile(mobile);
+        if (user != null) {
+            List<QuestionSearchRes> list = questionService.queryByScore(user.getId(), lowRank, highRank);
+            return list;
+        } else {
+            return null;
+        }
     }
 
 }

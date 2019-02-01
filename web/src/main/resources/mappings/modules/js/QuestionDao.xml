@@ -27,10 +27,54 @@
 	</select>
 
 	<!--按难度查询问题-->
-	<select id="queryByScore">
-		select q.name, q.score, c.num from js_question q LEFT join
+	<select id="queryByScore" resultType="Question">
+		select q.name, q.score,q.id, c.num from js_question q LEFT join
 		(SELECT question_id, count(*) as num from js_completed GROUP BY question_id) c
 		on q.id = c.question_id where q.id not in
-        (SELECT question_id from js_completed where user_id = #{userId}) and q.score <![CDATA[ >= ]]> #{low} and q.score <![CDATA[ <= ]]> #{hight}
+        (SELECT question_id from js_completed where user_id = #{userId}) and q.score <![CDATA[ >= ]]> #{low} and q.score <![CDATA[ <= ]]> #{high}
 	</select>
+
+	<!--按时间排序-->
+	<select id="orderByTime">
+		SELECT * from js_question ORDER BY create_date desc
+	</select>
+
+	<!--按完成人数排序-->
+	<select id="orderByComplete">
+		select q.*,r.count from js_question q
+		left join
+		(SELECT c.question_id,COUNT(1) count from js_completed c GROUP BY question_id) r
+		on q.id = r.question_id ORDER BY r.count desc
+	</select>
+
+	<!--按分数排序-->
+	<select id="queryByArgs" resultType="Question">
+		select q.name name, q.score score,q.id, c.count count from js_question q LEFT join
+		(SELECT question_id, count(*) as count from js_completed GROUP BY question_id) c
+		on q.id = c.question_id where q.id not in
+    	(SELECT question_id from js_completed where user_id = #{QuestionSearchRes.userId})
+		<if test="QuestionSearchRes.lowRank != null and QuestionSearchRes.lowRank != ''">
+			and q.score <![CDATA[ >= ]]> #{QuestionSearchRes.lowRank}
+	    </if>
+	    <if test="QuestionSearchRes.highRank != null and QuestionSearchRes.highRank != ''">
+			and q.score <![CDATA[ <= ]]> #{QuestionSearchRes.highRank}
+	    </if>
+	    <if test="QuestionSearchRes.name != null and QuestionSearchRes.name != ''">
+			AND q.name like concat('%', #{QuestionSearchRes.name}, '%')
+	    </if>
+	    <if test="QuestionSearchRes.count != null and QuestionSearchRes.count != ''">
+			order by count desc
+	    </if>
+
+	    <if test="QuestionSearchRes.score != null and QuestionSearchRes.score != '' and (QuestionSearchRes.count == null or QuestionSearchRes.count == '') ">
+			order by score desc
+	    </if>
+
+		<if test="QuestionSearchRes.score != null and QuestionSearchRes.score != '' and QuestionSearchRes.count != null and QuestionSearchRes.count != ''">
+			,score desc
+	    </if>
+
+
+	</select>
+
 </mapper>

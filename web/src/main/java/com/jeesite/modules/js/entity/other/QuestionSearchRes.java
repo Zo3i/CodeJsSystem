@@ -1,12 +1,22 @@
 package com.jeesite.modules.js.entity.other;
 
 public class QuestionSearchRes {
+    private String id;
     private String name;
     private Integer score;
-    private Integer completeNum;
     private Integer lowRank;
     private Integer highRank;
     private String mobile;
+    private Integer count;
+    private String userId;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -22,14 +32,6 @@ public class QuestionSearchRes {
 
     public void setScore(Integer score) {
         this.score = score;
-    }
-
-    public Integer getCompleteNum() {
-        return completeNum;
-    }
-
-    public void setCompleteNum(Integer completeNum) {
-        this.completeNum = completeNum;
     }
 
     public Integer getLowRank() {
@@ -54,5 +56,21 @@ public class QuestionSearchRes {
 
     public void setMobile(String mobile) {
         this.mobile = mobile;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

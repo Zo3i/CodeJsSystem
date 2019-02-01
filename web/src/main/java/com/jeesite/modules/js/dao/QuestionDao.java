@@ -23,4 +23,5 @@ public interface QuestionDao extends CrudDao<Question> {
 	Question getRandomQuestion(@Param("userId") String userId);
 	List<Question> getAllQuestion(@Param("userId") String userId);
 	List<QuestionSearchRes> queryByScore(@Param("userId") String userId, @Param("low") Integer low, @Param("high") Integer high);
+	List<QuestionSearchRes> queryByArgs(@Param("QuestionSearchRes") QuestionSearchRes questionSearchRes);
 }

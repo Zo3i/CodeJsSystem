@@ -120,4 +120,11 @@ public class QuestionService extends CrudService<QuestionDao, Question> {
 		return questionDao.queryByScore(userId, low, high);
 	}
 
+	@Transactional(readOnly = false)
+	public List<QuestionSearchRes> queryByArgs(QuestionSearchRes questionSearchRes){
+		return questionDao.queryByArgs(questionSearchRes);
+	}
+
+
+
 }
