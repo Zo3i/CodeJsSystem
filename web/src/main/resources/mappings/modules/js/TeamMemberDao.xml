@@ -11,5 +11,11 @@
 		</where>
 		ORDER BY ${sqlMap.order.toSql()}
 	</select> -->
-	
+
+	<select id="list" resultType="JsUser">
+		SELECT DISTINCT u.name name, u.rank rank, u.zone_id zoneId, u.mobile mobile from js_team_member m
+			LEFT JOIN js_user u on u.team_id = m.team_id
+			where m.team_id = #{teamId}
+		ORDER BY u.rank desc,u.create_date desc
+	</select>
 </mapper>

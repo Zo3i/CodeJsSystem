@@ -5,6 +5,8 @@ package com.jeesite.modules.js.service;
 
 import java.util.List;
 
+import com.jeesite.modules.js.entity.JsUser;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +23,10 @@ import com.jeesite.modules.js.dao.TeamMemberDao;
 @Service
 @Transactional(readOnly=true)
 public class TeamMemberService extends CrudService<TeamMemberDao, TeamMember> {
-	
+
+	@Autowired
+	private TeamMemberDao teamMemberDao;
+
 	/**
 	 * 获取单条数据
 	 * @param teamMember
@@ -72,5 +77,9 @@ public class TeamMemberService extends CrudService<TeamMemberDao, TeamMember> {
 	public void delete(TeamMember teamMember) {
 		super.delete(teamMember);
 	}
-	
+
+	@Transactional(readOnly=false)
+	public List<JsUser> list(String teamId) {
+		return teamMemberDao.list(teamId);
+	}
 }

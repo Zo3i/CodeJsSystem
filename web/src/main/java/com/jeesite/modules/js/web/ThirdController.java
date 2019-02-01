@@ -390,22 +390,23 @@ public class ThirdController {
      */
     @ResponseBody
     @RequestMapping("/teamall")
-    public List<TeamMember> teamall(String teamid) {
+    public List<JsUser> teamall(String teamid) {
 //        repass();
-        TeamMember teamMember = new TeamMember();
+//        TeamMember teamMember = new TeamMember();
         if (StringUtils.isNotBlank(teamid)) {
-            teamMember.setTeamId(teamid);
-            List<TeamMember> list = teamMemberService.findList(teamMember);
-            for (TeamMember s : list) {
-                s.setJsUser(jsUserService.get(s.getUserId()));
-            }
-            Collections.sort(list, new Comparator<TeamMember>() {
-                @Override
-                public int compare(TeamMember o1, TeamMember o2) {
-                    return (o1.getJsUser().getRank() - o2.getJsUser().getRank()) > 0 ? -1 : 1;
-                }
-            });
-            return list;
+//            teamMember.setTeamId(teamid);
+//            List<TeamMember> list = teamMemberService.findList(teamMember);
+//            for (TeamMember s : list) {
+//                s.setJsUser(jsUserService.get(s.getUserId()));
+//            }
+//            Collections.sort(list, new Comparator<TeamMember>() {
+//                @Override
+//                public int compare(TeamMember o1, TeamMember o2) {
+//                    return (o1.getJsUser().getRank() - o2.getJsUser().getRank()) > 0 ? -1 : 1;
+//                }
+//            });
+
+            return teamMemberService.list(teamid);
         }
         return null;
     }
@@ -849,7 +850,7 @@ public class ThirdController {
                 } catch (InterruptedException e) {
                    e.printStackTrace();
             }
-            System.out.println("Shutting down");
+            System.out.println("释放内存");
             runtime.terminateExecution();
         }
     }).start();
