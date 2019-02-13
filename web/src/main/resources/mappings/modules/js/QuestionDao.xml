@@ -48,7 +48,7 @@
 	</select>
 
 	<!--按分数排序-->
-	<select id="queryByArgs" resultType="Question">
+	<select id="queryByArgs" resultType="map">
 		select q.name name, q.score score,q.id, c.count count from js_question q LEFT join
 		(SELECT question_id, count(*) as count from js_completed GROUP BY question_id) c
 		on q.id = c.question_id where q.id not in
