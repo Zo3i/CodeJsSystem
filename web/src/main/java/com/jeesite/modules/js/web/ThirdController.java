@@ -5,14 +5,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.eclipsesource.v8.V8;
 import com.eclipsesource.v8.V8Object;
 import com.jeesite.common.service.ServiceException;
-import com.jeesite.modules.common.utils.BeanUtils;
-import com.jeesite.modules.common.utils.ExcuteScriptUtil;
-import com.jeesite.modules.common.utils.PasswordUtil;
-import com.jeesite.modules.common.utils.RedisUtils;
+import com.jeesite.modules.common.utils.*;
 import com.jeesite.modules.js.entity.*;
 import com.jeesite.modules.js.entity.other.*;
 import com.jeesite.modules.js.service.*;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
@@ -336,7 +335,9 @@ public class ThirdController {
     public void dislike(@RequestBody Like like) {
         if (like != null) {
             like.setUserid(getUserByMobile(like.getMobile()).getId());
-            likeService.del(likeService.findList(like).get(0));
+            if (likeService.findList(like).size() > 0) {
+                likeService.del(likeService.findList(like).get(0));
+            }
         }
     }
 
@@ -365,7 +366,9 @@ public class ThirdController {
     public void discollect(@RequestBody Collect collect) {
         if (collect != null) {
             collect.setUserid(getUserByMobile(collect.getMobile()).getId());
-            collectService.del(collectService.findList(collect).get(0));
+            if (collectService.findList(collect).size() > 0) {
+                collectService.del(collectService.findList(collect).get(0));
+            }
         }
     }
 
@@ -959,6 +962,48 @@ public class ThirdController {
         } else {
             return null;
         }
+    }
+
+    /***
+     * 获取短信验证码
+     */
+    @ResponseBody
+    @RequestMapping("/code")
+    public void code (String mobile) {
+        String host = "https://smsapi.api51.cn";
+	    String path = "/code/";
+	    String method = "GET";
+	    String appcode = "1e2e2a3e59cc432587818a3eb1b2f219";
+	    Map<String, String> headers = new HashMap<String, String>();
+	    //最后在header中的格式(中间是英文空格)为Authorization:APPCODE 83359fd73fe94948385f570e3c139105
+	    headers.put("Authorization", "APPCODE " + appcode);
+	    Map<String, String> querys = new HashMap<String, String>();
+
+        String code = RandomStringUtils.random(4,"0123456789");
+
+	    querys.put("code", code);
+	    if (!mobile.isEmpty()) {
+	        querys.put("mobile", mobile);
+        }
+
+	    try {
+	    	/**
+	    	* 重要提示如下:
+	    	* HttpUtils请从
+	    	* https://github.com/aliyun/api-gateway-demo-sign-java/blob/master/src/main/java/com/aliyun/api/gateway/demo/util/HttpUtils.java
+	    	* 下载
+	    	*
+	    	* 相应的依赖请参照
+	    	* https://github.com/aliyun/api-gateway-demo-sign-java/blob/master/pom.xml
+	    	*/
+	    	HttpResponse response = HttpUtils.doGet(host, path, method, headers, querys);
+	    	System.out.println(response.toString());
+	    	//获取response的body
+	    	//System.out.println(EntityUtils.toString(response.getEntity()));
+	    } catch (Exception e) {
+	    	e.printStackTrace();
+	    }
+
     }
 
 }
