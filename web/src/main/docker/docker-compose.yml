@@ -1,0 +1,43 @@
+version : '2'
+services:
+
+  redis:
+    image: redis:3
+    command: redis-server --requirepass 1234
+    ports:
+      - "6379:6379"
+  nginx:
+    build: nginx
+    ports:
+      - "99:99"
+    expose:
+      - "99"  
+    volumes:
+      - ./nginx/dist/:/etc/nginx/html/
+    links:
+      - jsweb 
+
+  mysql:
+    image: js/mysql
+    volumes:
+           - ./src/main/docker/mysql/my.cnf:/root/mysql/my.cnf mysql
+    environment:
+       - MYSQL_ROOT_PASSWORD=123456
+    ports:
+       - "3306"
+    expose:
+       - "3306"
+
+  jsweb:
+    build: jsweb
+    volumes:
+      - ./w.sh:/w.sh
+    ports:
+      - "8091:8091"
+    restart: always
+    depends_on:
+      - mysql
+    links:
+      - mysql
+      - redis
+    entrypoint: "./w.sh mysql:3306 -- java -jar /app.jar"
