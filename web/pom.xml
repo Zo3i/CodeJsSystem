@@ -10,7 +10,7 @@
 		<relativePath>../parent/pom.xml</relativePath>
 	</parent>
 	
-	<artifactId>jeesite-web</artifactId>
+	<artifactId>jsWeb</artifactId>
 	<packaging>jar</packaging>
 	
 	<name>JeeSite Boot</name>
@@ -19,7 +19,7 @@
 	
 	<properties>
 		
-		<finalName>rxMgr</finalName><!-- war包的名称 ${project.artifactId} -->
+		<finalName>jsWeb</finalName><!-- war包的名称 ${project.artifactId} -->
 		<start-class>com.jeesite.modules.config.Application</start-class>
 		
 		<!-- environment setting -->
@@ -29,7 +29,8 @@
 
 
 		<!--docker支持-->
-		<docker.image.prefix>jeesite-web</docker.image.prefix>
+		<!--mvn clean package docker:build-->
+		<docker.image.prefix>jsWeb</docker.image.prefix>
 	</properties>
 
 	<dependencies>
@@ -40,11 +41,6 @@
 			<artifactId>spring-boot-starter-tomcat</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		
-		<!-- <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency> -->
 		
 		<!-- 核心模块 -->
 		<dependency>
@@ -109,6 +105,15 @@
 			<artifactId>j2v8_win32_x86_64</artifactId>
 			<version>4.6.0</version>
 		</dependency>
+
+		<!--linux环境-->
+		<!-- https://mvnrepository.com/artifact/com.eclipsesource.j2v8/j2v8_linux_x86_64 -->
+		<dependency>
+			<groupId>com.eclipsesource.j2v8</groupId>
+			<artifactId>j2v8_linux_x86_64</artifactId>
+			<version>4.6.0</version>
+		</dependency>
+
 
 		
 	</dependencies>
@@ -257,23 +262,5 @@
 		</pluginRepository>
 
 	</pluginRepositories>
-
-	<profiles>
-		<profile>
-			<id>local</id>
-			<properties>
-				<profiles.active>local</profiles.active>
-			</properties>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-		</profile>
-		<profile>
-			<id>demo</id>
-			<properties>
-				<profiles.active>demo</profiles.active>
-			</properties>
-		</profile>
-	</profiles>
 	
 </project>
