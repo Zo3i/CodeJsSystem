@@ -8,6 +8,7 @@ services:
       - "6379:6379"
   nginx:
     build: nginx
+    image: jo/nginx
     ports:
       - "99:99"
     expose:
@@ -30,6 +31,7 @@ services:
 
   jsweb:
     build: jsweb
+    image: jo/jsweb
     volumes:
       - ./w.sh:/w.sh
     ports:
