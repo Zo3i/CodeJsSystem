@@ -35,7 +35,7 @@ services:
     volumes:
       - ./w.sh:/w.sh
     ports:
-      - "8091:8091"
+      - "8090:8090"
     restart: always
     depends_on:
       - mysql
