@@ -13,37 +13,37 @@ shiro:
     ${adminPath}/third/** = anon
 
 # Redis 配置（2.x/3.x）
-#redis:
-#  enabled: true
-#  host: localhost
-#  port: 6379
-#  database: 0
-#  password: 1234
-#  pool:
-#    maxIdle: 3
-#    maxTotal: 20
-#
-#jdbc: #开发
-#  type: mysql
-#  driver: com.mysql.jdbc.Driver
-#  url: jdbc:mysql://127.0.0.1:3306/mypro?useSSL=true&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT
-#  username: root
-#  password: root
-#  testSql: SELECT 1
-
-jdbc: #docker
-  type: mysql
-  driver: com.mysql.jdbc.Driver
-  url: jdbc:mysql://mysql:3306/js?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT
-  username: docker
-  password: root
-  testSql: SELECT 1
 redis:
   enabled: true
-  host: redis
+  host: localhost
   port: 6379
   database: 0
   password: 1234
   pool:
     maxIdle: 3
     maxTotal: 20
+
+jdbc: #开发
+  type: mysql
+  driver: com.mysql.jdbc.Driver
+  url: jdbc:mysql://127.0.0.1:3306/mypro?useSSL=true&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT
+  username: root
+  password: root
+  testSql: SELECT 1
+
+#jdbc: #docker
+#  type: mysql
+#  driver: com.mysql.jdbc.Driver
+#  url: jdbc:mysql://mysql:3306/js?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT
+#  username: docker
+#  password: root
+#  testSql: SELECT 1
+#redis:
+#  enabled: true
+#  host: redis
+#  port: 6379
+#  database: 0
+#  password: 1234
+#  pool:
+#    maxIdle: 3
+#    maxTotal: 20
