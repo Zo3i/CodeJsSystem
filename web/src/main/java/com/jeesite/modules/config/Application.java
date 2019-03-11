@@ -17,7 +17,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * @version 2018-1-8
  */
 @SpringBootApplication(scanBasePackages={"com.jeesite.modules"})
-@EnableSwagger2
+//@EnableSwagger2
 public class Application extends SpringBootServletInitializer {
 	
 	public static void main(String[] args) {

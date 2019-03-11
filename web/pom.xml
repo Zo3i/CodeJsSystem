@@ -19,7 +19,7 @@
 	
 	<properties>
 		
-		<finalName>jsWeb</finalName><!-- war包的名称 ${project.artifactId} -->
+		<finalName>jsweb</finalName><!-- war包的名称 ${project.artifactId} -->
 		<start-class>com.jeesite.modules.config.Application</start-class>
 		
 		<!-- environment setting -->
@@ -30,7 +30,7 @@
 
 		<!--docker支持-->
 		<!--mvn clean package docker:build-->
-		<docker.image.prefix>jsWeb</docker.image.prefix>
+		<docker.image.prefix>zxx267/jsweb</docker.image.prefix>
 	</properties>
 
 	<dependencies>
@@ -51,7 +51,8 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
-			<scope>provided</scope>
+			<!--docker :compile old:provided -->
+			<scope>compile</scope>
 		</dependency>
 		
 		<!-- 核心模块 -->
@@ -191,6 +192,29 @@
 		</configuration>
 </plugin>
 <!-- Docker maven plugin -->
+
+	<plugin>
+		<groupId>com.google.cloud.tools</groupId>
+		<artifactId>jib-maven-plugin</artifactId>
+		<version>1.0.2</version>
+		<configuration>
+			<from>
+			  <image>openjdk:alpine</image>
+			</from>
+			<to>
+				<image>registry.hub.docker.com/zxx267/jsweb</image>
+			</to>
+		</configuration>
+		<executions>
+			<execution>
+				<phase>package</phase>
+				<goals>
+					<goal>build</goal>
+				</goals>
+			</execution>
+		</executions>
+	</plugin>
+
 
 
 		</plugins>
