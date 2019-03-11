@@ -10,9 +10,9 @@ services:
     build: nginx
     image: jo/nginx
     ports:
-      - "99:99"
+      - "80:80"
     expose:
-      - "99"  
+      - "80"
     volumes:
       - ./nginx/dist/:/etc/nginx/html/
     links:
