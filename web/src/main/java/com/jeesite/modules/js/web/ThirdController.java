@@ -59,8 +59,8 @@ public class ThirdController {
 
     public static final String AUTHORIZATION = "Authorization";
 
-    public HttpServletRequest getRequest() {
-        return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+    public String getToken() {
+        return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getHeader(AUTHORIZATION);
     }
 
     /***
@@ -68,17 +68,16 @@ public class ThirdController {
      */
     private LoginRsp getUser() {
         LoginRsp loginRsp = null;
-        HttpServletRequest request = getRequest();
-        String sessionId = request.getHeader(AUTHORIZATION);
-        if (StringUtils.isBlank(sessionId)) {
+        String token = getToken();
+        if (StringUtils.isBlank(token)) {
             throw new ServiceException("Header参数有误");
         }
-        loginRsp = redisUtils.getSession(sessionId);
+        loginRsp = redisUtils.getSession(token);
         if (loginRsp == null) {
             throw new ServiceException("请重新登录!");
         } else {
             JsUser temp = getUserByMobile(loginRsp.getMobile());
-            loginRsp = new LoginRsp(sessionId, temp);
+            loginRsp = new LoginRsp(token, temp);
         }
 
         return loginRsp;
@@ -508,8 +507,8 @@ public class ThirdController {
      */
     @ResponseBody
     @RequestMapping("/getMyAnwser")
-    public List<AnswerRes> getMyAnwser(String token) {
-
+    public List<AnswerRes> getMyAnwser() {
+        String token = getToken();
         LoginRsp loginRsp = redisUtils.getSession(token);
         if (loginRsp != null) {
 
@@ -552,8 +551,8 @@ public class ThirdController {
      */
     @ResponseBody
     @RequestMapping("/getLikeAnwser")
-    public List<AnswerRes> getLikeAnwser(String token) {
-
+    public List<AnswerRes> getLikeAnwser() {
+        String token = getToken();
         LoginRsp loginRsp = redisUtils.getSession(token);
         if (loginRsp != null) {
 
@@ -597,8 +596,9 @@ public class ThirdController {
      */
     @ResponseBody
     @RequestMapping("/getCollctAnwser")
-    public List<AnswerRes> getCollctAnwser(String token) {
+    public List<AnswerRes> getCollctAnwser() {
 
+        String token = getToken();
         LoginRsp loginRsp = redisUtils.getSession(token);
         if (loginRsp != null) {
 
@@ -644,8 +644,8 @@ public class ThirdController {
      */
     @ResponseBody
     @RequestMapping("/getAllQuestion")
-    public List<QuestionRes> getAllQuestion(String token) {
-
+    public List<QuestionRes> getAllQuestion() {
+        String token = getToken();
         List<QuestionRes> list = null;
         LoginRsp loginRsp = redisUtils.getSession(token);
         if (loginRsp != null) {
@@ -664,8 +664,8 @@ public class ThirdController {
      */
     @ResponseBody
     @RequestMapping("/myInfo")
-    public MyInfo myInfo(String token) {
-
+    public MyInfo myInfo() {
+        String token = getToken();
         LoginRsp loginRsp = redisUtils.getSession(token);
         MyInfo myInfo = new MyInfo();
         if (loginRsp != null) {
