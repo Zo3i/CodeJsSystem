@@ -47,12 +47,3 @@ jdbc: #开发
 #  pool:
 #    maxIdle: 3
 #    maxTotal: 20
-
-
-#jdbc: #远程
-#  type: mysql
-#  driver: com.mysql.jdbc.Driver
-#  url: jdbc:mysql://iyowe.com:32769/js?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT
-#  username: docker
-#  password: root
-#  testSql: SELECT 1
