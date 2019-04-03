@@ -56,7 +56,7 @@ public class ResultRecord extends DataEntity<ResultRecord> {
 		this.questionId = questionId;
 	}
 	
-	@Length(min=0, max=255, message="result长度不能超过 255 个字符")
+	@Length(min=0, max=10000, message="result长度不能超过 10000 个字符")
 	public String getResult() {
 		return result;
 	}

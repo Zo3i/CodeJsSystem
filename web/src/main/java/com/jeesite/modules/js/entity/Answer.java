@@ -30,14 +30,18 @@ public class Answer extends DataEntity<Answer> {
 	private String userId;		// 用户ID
 	private String answer;		// 答案
 	private String userMobile;
-	
-	public Answer() {
-		this(null);
+
+	public Answer(String userId, String questionId) {
+		this.userId = userId;
+		this.questionId = questionId;
 	}
 
-	public Answer(String id){
-		super(id);
+	
+	public Answer() {
+		super();
 	}
+
+
 	
 	@Length(min=0, max=50, message="问题ID长度不能超过 50 个字符")
 	public String getQuestionId() {

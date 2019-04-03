@@ -1,9 +1,6 @@
 package com.jeesite.modules.js.web;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.eclipsesource.v8.V8;
-import com.eclipsesource.v8.V8Object;
 import com.jeesite.common.service.ServiceException;
 import com.jeesite.modules.common.utils.*;
 import com.jeesite.modules.js.entity.*;
@@ -13,14 +10,10 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.*;
 
 
@@ -120,6 +113,9 @@ public class ThirdController {
         Question question = new Question();
         QuestionTasks questionTasks = new QuestionTasks();
 
+        if ("undefined".equals(mobile)) {
+            return null;
+        }
         //获取随机题目
         String userId = getUserByMobile(mobile).getId();
         question = questionService.getRandomQuestion(userId);
@@ -127,8 +123,8 @@ public class ThirdController {
         if (question != null) {
             String questionId = question.getId();
             questionTasks.setQuestionId(questionId);
-            List<QuestionTasks> tasks = questionTasksService.findList(questionTasks);
-            question.setQuestionTasksList(tasks);
+//            List<QuestionTasks> tasks = questionTasksService.findList(questionTasks);
+//            question.setQuestionTasksList(tasks);
             question.setRightAnswer("别想偷看答案了!");
         }
         return question;
@@ -157,53 +153,53 @@ public class ThirdController {
     public String saveAnswer(@RequestBody Answer answer) {
 
         /***
-         * 后端验证答案是否正确;19.1.29 by jo
+         * 后端验证答案是否正确;19.4.3 by jo
          */
         String mobile = answer.getUserMobile();
         String questionId = answer.getQuestionId();
 
         ResultRecord record = new ResultRecord();
-        QuestionTasks questionTasks = new QuestionTasks();
-        questionTasks.setQuestionId(questionId);
+        Completed completed = new Completed();
         record.setQuestionId(questionId);
         record.setMobile(mobile);
-        List<ResultRecord> list = resultRecordService.findList(record);
-        List<QuestionTasks> tasks = questionTasksService.findList(questionTasks);
 
-        if (list.size() < tasks.size()) {
+        List<ResultRecord> records = resultRecordService.findList(record);
+
+        if (records.size() == 0) {
             return "别想那么多花里胡哨的东西啦,安心答题!";
         }
 
+        // 用户提交的答案
+        ResultRecord real = records.get(0);
 
         JsUser user = new JsUser();
         user.setMobile(answer.getUserMobile());
         JsUser temp = jsUserService.findList(user).get(0);
-        //保存答题记录
-        Completed completed = new Completed();
-        completed.setQuestionId(answer.getQuestionId());
-
-        //获取题目积分
-
         Question question = questionService.get(answer.getQuestionId());
-        Integer rank = question.getScore();
+//        Integer rank = question.getScore();
+
+        completed.setUserId(temp.getId());
+        completed.setQuestionId(question.getId());
+        List<Completed> c = completedService.findList(completed);
+        if (c.size() == 0) {
+            return "你怎么进来的?";
+        }
 
         if (StringUtils.isNotBlank(temp.getId())) {
             answer.setUserId(temp.getId());
-            completed.setUserId(temp.getId());
-            completed.setQuestionId(question.getId());
-            //查询是否回答过题目
-            List<Completed> c = completedService.findList(completed);
-            if ( c.size() == 0) {
-                completedService.save(completed);
-                temp.setRank(temp.getRank() + rank);
-                jsUserService.save(temp);
+            answer.setAnswer(real.getResult());
+            List<Answer> userAnswer =  answerService.findList(new Answer(temp.getId(), questionId));
+            if (userAnswer.size() == 0) {
+                // 保存
+                answer.setAnswer(real.getResult());
                 answerService.save(answer);
-                resultRecordService.del(questionId);
             } else {
-                return "您已经回答过了!";
+                // 替换前端传来的答案
+                Answer tempAnswer = userAnswer.get(0);
+                tempAnswer.setAnswer(real.getResult());
+                answerService.update(tempAnswer);
             }
         }
-
         return "保存成功!";
     }
 
@@ -378,6 +374,9 @@ public class ThirdController {
     @ResponseBody
     @RequestMapping("/teaminfo")
     public TeamInfo teaminfo(String mobile) {
+        if ("undefined".equals(mobile)) {
+            return null;
+        }
         JsUser user = getUserByMobile(mobile);
         TeamMember teamMember = new TeamMember();
         TeamInfo teamInfo = new TeamInfo();
@@ -563,6 +562,9 @@ public class ThirdController {
             Like likes = new Like();
             likes.setUserid(currentUser.getId());
             List<String> likeAnswerId = BeanUtils.getField(likeService.findList(likes), "answerid");
+            if (likeAnswerId.size() == 0) {
+                return null;
+            }
             List<Answer> list = answerService.queryLikeAnswer(likeAnswerId);
             List<AnswerRes> answerResList = BeanUtils.tran(list, AnswerRes.class);
 
@@ -610,6 +612,9 @@ public class ThirdController {
             Collect collect = new Collect();
             collect.setUserid(currentUser.getId());
             List<String> collectAnswer = BeanUtils.getField(collectService.findList(collect), "answerid");
+            if (collectAnswer.size() == 0) {
+                return null;
+            }
             List<Answer> list = answerService.queryCollectAnswer(collectAnswer);
 
             List<AnswerRes> answerResList = BeanUtils.tran(list, AnswerRes.class);
@@ -839,7 +844,6 @@ public class ThirdController {
 
         //定时释放内存
         new Thread(new Runnable() {
-
             @Override
             public void run() {
                 try {
@@ -848,9 +852,8 @@ public class ThirdController {
                    e.printStackTrace();
             }
             System.out.println("释放内存");
-            runtime.terminateExecution();
-        }
-    }).start();
+            runtime.terminateExecution(); }
+        }).start();
 
         String task = "JSON.stringify(" + userAnswerRes.getTask() + ")";
 
@@ -894,6 +897,115 @@ public class ThirdController {
         return res;
     }
 
+    /***
+     * 判断用户回答是否正确(修改版);
+     * @param userAnswerRes
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/isAllRight")
+    public List<ReturnRes> isAllRight(@RequestBody UserAnswerRes1 userAnswerRes) {
+        String token = getToken();
+        JsUser user = getUserByToken(token);
+        List<ReturnRes> returnRes = new ArrayList<>();
+        Boolean isWrong = true;
+        Integer right = 0;
+        String userAnswer = "";
+        String rightAnswer = "";
+
+        // 获取问题信息
+        Question question = questionService.get(userAnswerRes.getQuestionId());
+
+        // 获取问题列表
+        List<QuestionTasks> questionTasks = questionTasksService.findList(new QuestionTasks(question.getId()));
+
+        V8 runtime = V8.createV8Runtime();
+
+        for (QuestionTasks teak : questionTasks) {
+            //定时释放内存
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                       Thread.sleep(3000);
+                    } catch (InterruptedException e) {
+                       e.printStackTrace();
+                }
+                System.out.println("释放内存");
+                runtime.terminateExecution(); }
+            }).start();
+
+            ReturnRes res = new ReturnRes();
+            String task = "JSON.stringify(" + teak.getTaskQuestion() + ")";
+            String userScript = userAnswerRes.getUseranswer() + task;
+            String rightScript = question.getRightAnswer() + task;
+            try {
+                userAnswer = runtime.executeStringScript(userScript);
+                rightAnswer = runtime.executeStringScript(rightScript);
+                if (userAnswer.equals(rightAnswer)) {
+                    res.setAnswer(userAnswer);
+                    res.setRight(true);
+                    res.setWrong(false);
+                    right++;
+                } else {
+                    res.setAnswer(userAnswer);
+                    res.setRight(false);
+                    res.setWrong(false);
+                }
+                returnRes.add(res);
+            } catch (Exception e) {
+                res.setWrong(isWrong);
+                if (StringUtils.isBlank(e.getMessage())) {
+                   res.setAnswer("无返回值!");
+                } else {
+                    if ("null".equals(e.getMessage())) {
+                        res.setAnswer("编译超时了,检查下代码吧;");
+                    } else {
+                        res.setAnswer(e.getMessage());
+                    }
+                }
+                returnRes.add(res);
+                return returnRes;
+            }
+        }
+        // 判断用户是否答对
+        if (right == questionTasks.size()) {
+            String questionId = question.getId();
+            // 判断用户是否做过
+            Completed completed = new Completed();
+            completed.setQuestionId(questionId);
+            completed.setUserId(user.getId());
+            Long count = completedService.findCount(completed);
+            if (count == 0) {
+                // 记录用户完成
+                completedService.save(completed);
+                // 加分逻辑
+                user.setRank(user.getRank() + question.getScore());
+                jsUserService.update(user);
+            }
+
+            // 原来的答案
+            ResultRecord record = new ResultRecord();
+            record.setMobile(user.getMobile());
+            record.setQuestionId(questionId);
+            List<ResultRecord> orgAnswers = resultRecordService.findList(record);
+            if (orgAnswers.size() > 0) {
+                // 修改原来的答案
+                ResultRecord orgAnswer = orgAnswers.get(0);
+                orgAnswer.setResult(userAnswerRes.getUseranswer());
+                resultRecordService.save(orgAnswer);
+            } else {
+                // 记录用户答案
+                record.setResult(userAnswerRes.getUseranswer());
+                resultRecordService.save(record);
+            }
+
+
+
+        }
+        runtime.release();
+        return returnRes;
+    }
     /***
      * 所有人排行榜
      */
@@ -1006,5 +1118,6 @@ public class ThirdController {
 	    	e.printStackTrace();
 	    }
     }
+
 
 }

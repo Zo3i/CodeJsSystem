@@ -29,13 +29,13 @@ public class QuestionTasks extends DataEntity<QuestionTasks> {
 	private String questionId;		// question_id
 	private String taskQuestion;		// task_question
 	private String taskAnswer;		// task_answer
-	
+
 	public QuestionTasks() {
-		this(null);
+		super();
 	}
 
 	public QuestionTasks(String id){
-		super(id);
+		this.questionId = id;
 	}
 	
 	@Length(min=0, max=32, message="question_id长度不能超过 32 个字符")
