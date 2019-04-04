@@ -15,6 +15,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 
 /***
@@ -237,6 +238,14 @@ public class ThirdController {
         user.setMobile(mobile);
         user.setPassword(password);
         user.setName(name);
+
+        // 检测手机格式
+        String pattern = "^1[34578]\\d{9}$";
+        boolean isMatch = Pattern.matches(pattern, mobile);
+
+        if (!isMatch) {
+            return "你的手机号有点问题呀!";
+        }
 
 
         JsUser temp = new JsUser();
