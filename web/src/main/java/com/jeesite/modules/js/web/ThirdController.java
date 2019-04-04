@@ -210,10 +210,14 @@ public class ThirdController {
     @RequestMapping("/login")
     public LoginRsp login(String password, String mobile) {
 
+                // 检测手机格式
+//        String pattern = "^1[34578]\\d{9}$";
+//        boolean isMatch = Pattern.matches(pattern, mobile);
+
         JsUser temp = new JsUser();
         temp.setMobile(mobile);
         List<JsUser> dbUser = jsUserService.findList(temp);
-        if (dbUser.size() != 0) {
+        if (dbUser.size() != 0 || true) {
             String DbPassWord = dbUser.get(0).getPassword();
             Boolean isPass = PasswordUtil.valid(password, Long.parseLong(mobile), DbPassWord);
             if (isPass) {
