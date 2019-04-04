@@ -217,7 +217,7 @@ public class ThirdController {
         JsUser temp = new JsUser();
         temp.setMobile(mobile);
         List<JsUser> dbUser = jsUserService.findList(temp);
-        if (dbUser.size() != 0 || true) {
+        if (dbUser.size() != 0 && true) {
             String DbPassWord = dbUser.get(0).getPassword();
             Boolean isPass = PasswordUtil.valid(password, Long.parseLong(mobile), DbPassWord);
             if (isPass) {
