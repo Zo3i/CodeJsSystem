@@ -9,7 +9,6 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 
 import com.jeesite.common.io.PropertiesUtils;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
  * JeeSite Web
@@ -17,7 +16,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * @version 2018-1-8
  */
 @SpringBootApplication(scanBasePackages={"com.jeesite.modules"})
-//@EnableSwagger2
 public class Application extends SpringBootServletInitializer {
 	
 	public static void main(String[] args) {
