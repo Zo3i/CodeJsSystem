@@ -327,8 +327,10 @@ public class ThirdController {
     @ResponseBody
     @RequestMapping("/like")
     public String like(@RequestBody Like like) {
+        String token = getToken();
+        JsUser user = getUserByToken(token);
         if (like != null) {
-            like.setUserid(getUserByMobile(like.getMobile()).getId());
+            like.setUserid(user.getId());
             if (likeService.findList(like).size() > 0) {
                 return "你已经点过赞了!";
             } else {
@@ -344,8 +346,10 @@ public class ThirdController {
     @ResponseBody
     @RequestMapping("/dislike")
     public void dislike(@RequestBody Like like) {
+        String token = getToken();
+        JsUser user = getUserByToken(token);
         if (like != null) {
-            like.setUserid(getUserByMobile(like.getMobile()).getId());
+            like.setUserid(user.getId());
             if (likeService.findList(like).size() > 0) {
                 likeService.del(likeService.findList(like).get(0));
             }
@@ -358,8 +362,10 @@ public class ThirdController {
     @ResponseBody
     @RequestMapping("/collect")
     public String collect(@RequestBody Collect collect) {
+        String token = getToken();
+        JsUser user = getUserByToken(token);
         if (collect != null) {
-            collect.setUserid(getUserByMobile(collect.getMobile()).getId());
+            collect.setUserid(user.getId());
             if (collectService.findList(collect).size() > 0) {
                 return "你已经收藏过了!";
             } else {
@@ -375,8 +381,10 @@ public class ThirdController {
     @ResponseBody
     @RequestMapping("/discollect")
     public void discollect(@RequestBody Collect collect) {
+        String token = getToken();
+        JsUser user = getUserByToken(token);
         if (collect != null) {
-            collect.setUserid(getUserByMobile(collect.getMobile()).getId());
+            collect.setUserid(user.getId());
             if (collectService.findList(collect).size() > 0) {
                 collectService.del(collectService.findList(collect).get(0));
             }

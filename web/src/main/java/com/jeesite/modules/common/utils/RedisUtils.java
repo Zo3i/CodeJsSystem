@@ -1,7 +1,6 @@
 package com.jeesite.modules.common.utils;
 
 
-import com.jeesite.modules.js.entity.JsUser;
 import com.jeesite.modules.js.entity.other.LoginRsp;
 import redis.clients.jedis.Jedis;
 
