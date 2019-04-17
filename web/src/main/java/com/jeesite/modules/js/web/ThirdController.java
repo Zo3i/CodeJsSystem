@@ -3,6 +3,8 @@ package com.jeesite.modules.js.web;
 import com.eclipsesource.v8.V8;
 import com.jeesite.common.service.ServiceException;
 import com.jeesite.modules.common.utils.*;
+import com.jeesite.modules.common.utils.limit.RequestLimit;
+import com.jeesite.modules.common.utils.limit.RequestLimitException;
 import com.jeesite.modules.js.entity.*;
 import com.jeesite.modules.js.entity.other.*;
 import com.jeesite.modules.js.service.*;
@@ -210,14 +212,14 @@ public class ThirdController {
     @RequestMapping("/login")
     public LoginRsp login(String password, String mobile) {
 
-                // 检测手机格式
-//        String pattern = "^1[34578]\\d{9}$";
-//        boolean isMatch = Pattern.matches(pattern, mobile);
+         // 检测手机格式
+        String pattern = "^1[34578]\\d{9}$";
+        boolean isMatch = Pattern.matches(pattern, mobile);
 
         JsUser temp = new JsUser();
         temp.setMobile(mobile);
         List<JsUser> dbUser = jsUserService.findList(temp);
-        if (dbUser.size() != 0 && true) {
+        if (dbUser.size() != 0 && isMatch) {
             String DbPassWord = dbUser.get(0).getPassword();
             Boolean isPass = PasswordUtil.valid(password, Long.parseLong(mobile), DbPassWord);
             if (isPass) {
@@ -236,6 +238,7 @@ public class ThirdController {
     /***
      * 注册
      */
+    @RequestLimit(maxCount = 5)
     @RequestMapping("/sign")
     public String sign(String password, String mobile, String name) {
         JsUser user = new JsUser();
@@ -324,8 +327,10 @@ public class ThirdController {
     @ResponseBody
     @RequestMapping("/like")
     public String like(@RequestBody Like like) {
+        String token = getToken();
+        JsUser user = getUserByToken(token);
         if (like != null) {
-            like.setUserid(getUserByMobile(like.getMobile()).getId());
+            like.setUserid(user.getId());
             if (likeService.findList(like).size() > 0) {
                 return "你已经点过赞了!";
             } else {
@@ -341,8 +346,10 @@ public class ThirdController {
     @ResponseBody
     @RequestMapping("/dislike")
     public void dislike(@RequestBody Like like) {
+        String token = getToken();
+        JsUser user = getUserByToken(token);
         if (like != null) {
-            like.setUserid(getUserByMobile(like.getMobile()).getId());
+            like.setUserid(user.getId());
             if (likeService.findList(like).size() > 0) {
                 likeService.del(likeService.findList(like).get(0));
             }
@@ -355,8 +362,10 @@ public class ThirdController {
     @ResponseBody
     @RequestMapping("/collect")
     public String collect(@RequestBody Collect collect) {
+        String token = getToken();
+        JsUser user = getUserByToken(token);
         if (collect != null) {
-            collect.setUserid(getUserByMobile(collect.getMobile()).getId());
+            collect.setUserid(user.getId());
             if (collectService.findList(collect).size() > 0) {
                 return "你已经收藏过了!";
             } else {
@@ -372,8 +381,10 @@ public class ThirdController {
     @ResponseBody
     @RequestMapping("/discollect")
     public void discollect(@RequestBody Collect collect) {
+        String token = getToken();
+        JsUser user = getUserByToken(token);
         if (collect != null) {
-            collect.setUserid(getUserByMobile(collect.getMobile()).getId());
+            collect.setUserid(user.getId());
             if (collectService.findList(collect).size() > 0) {
                 collectService.del(collectService.findList(collect).get(0));
             }
@@ -745,6 +756,7 @@ public class ThirdController {
      */
     @ResponseBody
     @RequestMapping("/leaveComment")
+    @RequestLimit(maxCount = 2)
     public String leaveComment (@RequestBody Comment comment) {
 
         String token = comment.getToken();
@@ -1092,6 +1104,7 @@ public class ThirdController {
     /***
      * 获取短信验证码
      */
+    @RequestLimit(maxCount = 2)
     @ResponseBody
     @RequestMapping("/code")
     public void code (String mobile) {
@@ -1127,8 +1140,10 @@ public class ThirdController {
 	    	System.out.println(response.toString());
 	    	//获取response的body
 	    	//System.out.println(EntityUtils.toString(response.getEntity()));
-	    } catch (Exception e) {
-	    	e.printStackTrace();
+	    }
+	    catch (Exception e) {
+//	    	e.printStackTrace();
+	    	throw new ServiceException("请勿频繁访问接口！");
 	    }
     }
 
