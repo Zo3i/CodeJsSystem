@@ -116,15 +116,6 @@
 		    <artifactId>poi-ooxml</artifactId>
 		    <version>3.16</version>
 		</dependency>
-		
-		<!-- 自定义jar依赖包演示
-		<dependency>
-			<groupId>com.jeesite</groupId>
-			<artifactId>test-core</artifactId>
-			<version>1.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/test-core-1.0.jar</systemPath>
-		</dependency> -->
 
 		<!-- https://mvnrepository.com/artifact/com.eclipsesource.j2v8/j2v8_win32_x86_64 -->
 		<dependency>
@@ -155,10 +146,6 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-			<!-- <plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-			</plugin> -->
 			
 			<!-- 打包插件, war包名称不带版本号 -->
 			<plugin>
@@ -188,46 +175,46 @@
 				</configuration>
 			</plugin>
 
-<!-- Docker maven plugin -->
-<plugin>
-	<groupId>com.spotify</groupId>
-	<artifactId>docker-maven-plugin</artifactId>
-	<version>1.0.0</version>
-		<configuration>
-		<imageName>${docker.image.prefix}/${project.artifactId}</imageName>
-		<dockerDirectory>src/main/docker</dockerDirectory>
-		<resources>
-			<resource>
-				<targetPath>/</targetPath>
-					<directory>${project.build.directory}</directory>
-					<include>${project.build.finalName}.jar</include>
-			</resource>
-		</resources>
-		</configuration>
-</plugin>
-<!-- Docker maven plugin -->
+			<!-- Docker maven plugin -->
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>1.0.0</version>
+					<configuration>
+					<imageName>${docker.image.prefix}/${project.artifactId}</imageName>
+					<dockerDirectory>src/main/docker</dockerDirectory>
+					<resources>
+						<resource>
+							<targetPath>/</targetPath>
+								<directory>${project.build.directory}</directory>
+								<include>${project.build.finalName}.jar</include>
+						</resource>
+					</resources>
+					</configuration>
+			</plugin>
+			<!-- Docker maven plugin -->
 
-	<plugin>
-		<groupId>com.google.cloud.tools</groupId>
-		<artifactId>jib-maven-plugin</artifactId>
-		<version>1.0.2</version>
-		<configuration>
-			<from>
-			  <image>openjdk:alpine</image>
-			</from>
-			<to>
-				<image>registry.hub.docker.com/zxx267/jsweb</image>
-			</to>
-		</configuration>
-		<executions>
-			<execution>
-				<phase>package</phase>
-				<goals>
-					<goal>build</goal>
-				</goals>
-			</execution>
-		</executions>
-	</plugin>
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<version>1.0.2</version>
+				<configuration>
+					<from>
+					  <image>openjdk:alpine</image>
+					</from>
+					<to>
+						<image>registry.hub.docker.com/zxx267/jsweb</image>
+					</to>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>build</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 
 
 
