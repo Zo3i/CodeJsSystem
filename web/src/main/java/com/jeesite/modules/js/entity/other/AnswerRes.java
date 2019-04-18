@@ -1,14 +1,10 @@
 package com.jeesite.modules.js.entity.other;
 
-import com.jeesite.modules.js.entity.Answer;
-import com.jeesite.modules.js.entity.JsUser;
-import com.jeesite.modules.js.entity.Question;
-
 public class AnswerRes {
 
 
     private String id;
-	private String questionId;		// 问题ID
+	private String questionId;	// 问题ID
 	private String userId;		// 用户ID
 	private String answer;		// 答案
 	private String userMobile; //用户手机号
@@ -16,16 +12,30 @@ public class AnswerRes {
 	private Boolean isCollect; //当前用户是否点赞
 	private Integer totalLike; //该答案获取的所有like数量
 	private Integer totalCollect;//改答案所有搜藏数量
-	private Question question; //问题详情
-	private JsUser user; //答题者详情
+    private String zoneId;
+    private String name;
+//	private Question question; //问题详情
+//	private JsUser user; //答题者详情
 
 
-    public AnswerRes(Answer s) {
-        this.id = s.getId();
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public AnswerRes(TempAnswerRes s) {
+        this.id = s.getAnswerId();
         this.questionId = s.getQuestionId();
         this.userId = s.getUserId();
         this.answer = s.getAnswer();
-        this.userMobile = s.getUserMobile();
+        this.userMobile = s.getMobile();
+        this.zoneId = s.getZoneId();
+        this.totalLike = s.getLikeCount();
+        this.totalCollect = s.getCollectCount();
+        this.name = s.getName();
     }
 
     public String getQuestionId() {
@@ -92,27 +102,19 @@ public class AnswerRes {
         this.totalCollect = totalCollect;
     }
 
-    public Question getQuestion() {
-        return question;
-    }
-
-    public void setQuestion(Question question) {
-        this.question = question;
-    }
-
-    public JsUser getUser() {
-        return user;
-    }
-
-    public void setUser(JsUser user) {
-        this.user = user;
-    }
-
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getZoneId() {
+        return zoneId;
+    }
+
+    public void setZoneId(String zoneId) {
+        this.zoneId = zoneId;
     }
 }

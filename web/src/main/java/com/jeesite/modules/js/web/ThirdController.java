@@ -289,27 +289,15 @@ public class ThirdController {
             return null;
         }
 
-        List<Answer> list = answerService.findList(answer);
+        List<TempAnswerRes> list = answerService.queryAnswerByQuestionId(answer.getQuestionId());
         List<AnswerRes> answerResList = BeanUtils.tran(list, AnswerRes.class);
+        List<String> likeAnswers = answerService.likeAnswers(currentUser.getId());
+        List<String> collectAnswer = answerService.collectAnswers(currentUser.getId());
 
-        for (AnswerRes s : answerResList) {
-            Question question = questionService.get(s.getQuestionId());
-            question.setRightAnswer("别想偷看答案了!");
-            JsUser user = jsUserService.get(s.getUserId());
-            Integer collectNum = collectService.findList(new Collect(s.getId())).size();
-            Integer likeNum = likeService.findList(new Like(s.getId())).size();
-
-            Like like = likeService.isLike(s.getId(), currentUser.getId(), s.getUserId());
-
-            Boolean isLike = like != null ? true : false;
-            Boolean isCollect = collectService.findList(new Collect(s.getId(), currentUser.getId(), s.getUserId())).size() > 0 ? true : false;
-            s.setQuestion(question);
-            s.setUser(user);
-            s.setTotalCollect(collectNum);
-            s.setTotalLike(likeNum);
-            s.setLike(isLike);
-            s.setCollect(isCollect);
-        }
+         for (AnswerRes s : answerResList) {
+                s.setLike(likeAnswers.contains(s.getId()));
+                s.setCollect(collectAnswer.contains(s.getId()));
+         }
 
         //最佳答案排序
         Collections.sort(answerResList, new Comparator<AnswerRes>() {
@@ -533,33 +521,18 @@ public class ThirdController {
     public List<AnswerRes> getMyAnwser() {
         String token = getToken();
         LoginRsp loginRsp = redisUtils.getSession(token);
+
         if (loginRsp != null) {
-
             JsUser currentUser = getUserByMobile(loginRsp.getMobile());
-
+            List<TempAnswerRes> tempAnswerRes = answerService.queryAnswerByUserId(currentUser.getId());
             Answer answer = new Answer();
             answer.setUserId(currentUser.getId());
-
-            List<Answer> list = answerService.findList(answer);
-            List<AnswerRes> answerResList = BeanUtils.tran(list, AnswerRes.class);
-
+            List<AnswerRes> answerResList = BeanUtils.tran(tempAnswerRes, AnswerRes.class);
+            List<String> likeAnswers = answerService.likeAnswers(currentUser.getId());
+            List<String> collectAnswer = answerService.collectAnswers(currentUser.getId());
             for (AnswerRes s : answerResList) {
-                Question question = questionService.get(s.getQuestionId());
-                question.setRightAnswer("别想偷看答案了!");
-                JsUser user = jsUserService.get(s.getUserId());
-                Integer collectNum = collectService.findList(new Collect(s.getId())).size();
-                Integer likeNum = likeService.findList(new Like(s.getId())).size();
-
-                Like like = likeService.isLike(s.getId(), currentUser.getId(), s.getUserId());
-
-                Boolean isLike = like != null ? true : false;
-                Boolean isCollect = collectService.findList(new Collect(s.getId(), currentUser.getId(), s.getUserId())).size() > 0 ? true : false;
-                s.setQuestion(question);
-                s.setUser(user);
-                s.setTotalCollect(collectNum);
-                s.setTotalLike(likeNum);
-                s.setLike(isLike);
-                s.setCollect(isCollect);
+                s.setLike(likeAnswers.contains(s.getId()));
+                s.setCollect(collectAnswer.contains(s.getId()));
             }
             return answerResList;
         } else {
@@ -580,35 +553,13 @@ public class ThirdController {
         if (loginRsp != null) {
 
             JsUser currentUser = getUserByMobile(loginRsp.getMobile());
-
-            Answer answer = new Answer();
-            answer.setUserId(currentUser.getId());
-            Like likes = new Like();
-            likes.setUserid(currentUser.getId());
-            List<String> likeAnswerId = BeanUtils.getField(likeService.findList(likes), "answerid");
-            if (likeAnswerId.size() == 0) {
-                return null;
-            }
-            List<Answer> list = answerService.queryLikeAnswer(likeAnswerId);
-            List<AnswerRes> answerResList = BeanUtils.tran(list, AnswerRes.class);
-
+            List<TempAnswerRes> tempAnswerRes = answerService.queryLikeAnswerByQuestionId(currentUser.getId());
+            List<AnswerRes> answerResList = BeanUtils.tran(tempAnswerRes, AnswerRes.class);
+            List<String> likeAnswers = answerService.likeAnswers(currentUser.getId());
+            List<String> collectAnswer = answerService.collectAnswers(currentUser.getId());
             for (AnswerRes s : answerResList) {
-                Question question = questionService.get(s.getQuestionId());
-                question.setRightAnswer("别想偷看答案了!");
-                JsUser user = jsUserService.get(s.getUserId());
-                Integer collectNum = collectService.findList(new Collect(s.getId())).size();
-                Integer likeNum = likeService.findList(new Like(s.getId())).size();
-
-                Like like = likeService.isLike(s.getId(), currentUser.getId(), s.getUserId());
-
-                Boolean isLike = like != null ? true : false;
-                Boolean isCollect = collectService.findList(new Collect(s.getId(), currentUser.getId(), s.getUserId())).size() > 0 ? true : false;
-                s.setQuestion(question);
-                s.setUser(user);
-                s.setTotalCollect(collectNum);
-                s.setTotalLike(likeNum);
-                s.setLike(isLike);
-                s.setCollect(isCollect);
+                s.setLike(likeAnswers.contains(s.getId()));
+                s.setCollect(collectAnswer.contains(s.getId()));
             }
             return answerResList;
         } else {
@@ -627,39 +578,14 @@ public class ThirdController {
         String token = getToken();
         LoginRsp loginRsp = redisUtils.getSession(token);
         if (loginRsp != null) {
-
             JsUser currentUser = getUserByMobile(loginRsp.getMobile());
-
-            Answer answer = new Answer();
-            answer.setUserId(currentUser.getId());
-
-            Collect collect = new Collect();
-            collect.setUserid(currentUser.getId());
-            List<String> collectAnswer = BeanUtils.getField(collectService.findList(collect), "answerid");
-            if (collectAnswer.size() == 0) {
-                return null;
-            }
-            List<Answer> list = answerService.queryCollectAnswer(collectAnswer);
-
-            List<AnswerRes> answerResList = BeanUtils.tran(list, AnswerRes.class);
-
+            List<TempAnswerRes> tempAnswerRes = answerService.queryCollectAnswerByQuestionId(currentUser.getId());
+            List<AnswerRes> answerResList = BeanUtils.tran(tempAnswerRes, AnswerRes.class);
+            List<String> likeAnswers = answerService.likeAnswers(currentUser.getId());
+            List<String> collectAnswer = answerService.collectAnswers(currentUser.getId());
             for (AnswerRes s : answerResList) {
-                Question question = questionService.get(s.getQuestionId());
-                question.setRightAnswer("别想偷看答案了!");
-                JsUser user = jsUserService.get(s.getUserId());
-                Integer collectNum = collectService.findList(new Collect(s.getId())).size();
-                Integer likeNum = likeService.findList(new Like(s.getId())).size();
-
-                Like like = likeService.isLike(s.getId(), currentUser.getId(), s.getUserId());
-
-                Boolean isLike = like != null ? true : false;
-                Boolean isCollect = collectService.findList(new Collect(s.getId(), currentUser.getId(), s.getUserId())).size() > 0 ? true : false;
-                s.setQuestion(question);
-                s.setUser(user);
-                s.setTotalCollect(collectNum);
-                s.setTotalLike(likeNum);
-                s.setLike(isLike);
-                s.setCollect(isCollect);
+                s.setLike(likeAnswers.contains(s.getId()));
+                s.setCollect(collectAnswer.contains(s.getId()));
             }
             return answerResList;
         } else {

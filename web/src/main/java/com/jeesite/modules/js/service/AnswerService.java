@@ -5,6 +5,7 @@ package com.jeesite.modules.js.service;
 
 import java.util.List;
 
+import com.jeesite.modules.js.entity.other.TempAnswerRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -94,6 +95,40 @@ public class AnswerService extends CrudService<AnswerDao, Answer> {
 	public List<Answer> queryCollectAnswer(List<String> collectAnswerIds) {
 		return answerDao.queryCollectAnswer(collectAnswerIds);
 	}
+
+	@Transactional(readOnly=false)
+	public List<TempAnswerRes> queryAnswerByUserId(String userId) {
+		return answerDao.queryAnswerByUserId(userId);
+	}
+
+	@Transactional(readOnly=false)
+	public List<TempAnswerRes> queryAnswerByQuestionId(String questionId) {
+		return answerDao.queryAnswerByQuestionId(questionId);
+	}
+
+	@Transactional(readOnly=false)
+	public List<TempAnswerRes> queryLikeAnswerByQuestionId(String userId) {
+		return answerDao.queryLikeAnswerByQuestionId(userId);
+	}
+
+
+	@Transactional(readOnly=false)
+	public List<TempAnswerRes> queryCollectAnswerByQuestionId(String userId) {
+		return answerDao.queryCollectAnswerByQuestionId(userId);
+	}
+
+	@Transactional(readOnly=false)
+	public List<String> likeAnswers(String userId) {
+		return answerDao.likeAnswers(userId);
+	}
+
+
+	@Transactional(readOnly=false)
+	public List<String> collectAnswers(String userId) {
+		return answerDao.collectAnswers(userId);
+	}
+
+
 
 
 }
