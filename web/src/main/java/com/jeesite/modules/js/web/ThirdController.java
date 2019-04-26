@@ -126,8 +126,6 @@ public class ThirdController {
         if (question != null) {
             String questionId = question.getId();
             questionTasks.setQuestionId(questionId);
-//            List<QuestionTasks> tasks = questionTasksService.findList(questionTasks);
-//            question.setQuestionTasksList(tasks);
             question.setRightAnswer("别想偷看答案了!");
         }
         return question;
@@ -140,7 +138,7 @@ public class ThirdController {
     public Question getQuestion(@PathVariable String id) {
         QuestionTasks questionTasks = new QuestionTasks();
         Question question = questionService.get(id);
-        //获取题目的tasks/.
+        // 获取题目的tasks
         questionTasks.setQuestionId(id);
         List<QuestionTasks> tasks = questionTasksService.findList(questionTasks);
         question.setQuestionTasksList(tasks);
@@ -179,7 +177,6 @@ public class ThirdController {
         user.setMobile(answer.getUserMobile());
         JsUser temp = jsUserService.findList(user).get(0);
         Question question = questionService.get(answer.getQuestionId());
-//        Integer rank = question.getScore();
 
         completed.setUserId(temp.getId());
         completed.setQuestionId(question.getId());
@@ -409,21 +406,7 @@ public class ThirdController {
     @ResponseBody
     @RequestMapping("/teamall")
     public List<JsUser> teamall(String teamid) {
-//        repass();
-//        TeamMember teamMember = new TeamMember();
         if (StringUtils.isNotBlank(teamid)) {
-//            teamMember.setTeamId(teamid);
-//            List<TeamMember> list = teamMemberService.findList(teamMember);
-//            for (TeamMember s : list) {
-//                s.setJsUser(jsUserService.get(s.getUserId()));
-//            }
-//            Collections.sort(list, new Comparator<TeamMember>() {
-//                @Override
-//                public int compare(TeamMember o1, TeamMember o2) {
-//                    return (o1.getJsUser().getRank() - o2.getJsUser().getRank()) > 0 ? -1 : 1;
-//                }
-//            });
-
             return teamMemberService.list(teamid);
         }
         return null;
@@ -506,7 +489,6 @@ public class ThirdController {
         List<TeamRes> teamList = null;
         for (TeamInfo s : list) {
             TeamRes teamRes = new TeamRes();
-//            teamRes.setTeamCreatorName();
         }
         return null;
     }
@@ -551,7 +533,6 @@ public class ThirdController {
         String token = getToken();
         LoginRsp loginRsp = redisUtils.getSession(token);
         if (loginRsp != null) {
-
             JsUser currentUser = getUserByMobile(loginRsp.getMobile());
             List<TempAnswerRes> tempAnswerRes = answerService.queryLikeAnswerByQuestionId(currentUser.getId());
             List<AnswerRes> answerResList = BeanUtils.tran(tempAnswerRes, AnswerRes.class);
@@ -574,7 +555,6 @@ public class ThirdController {
     @ResponseBody
     @RequestMapping("/getCollctAnwser")
     public List<AnswerRes> getCollctAnwser() {
-
         String token = getToken();
         LoginRsp loginRsp = redisUtils.getSession(token);
         if (loginRsp != null) {
@@ -624,17 +604,13 @@ public class ThirdController {
         LoginRsp loginRsp = redisUtils.getSession(token);
         MyInfo myInfo = new MyInfo();
         if (loginRsp != null) {
-
             JsUser currentUser = getUserByMobile(loginRsp.getMobile());
             if (currentUser != null) {
                 Like like = new Like();
                 like.setAuthorid(currentUser.getId());
-
                 Collect collect = new Collect();
                 collect.setAuthorid(currentUser.getId());
-
                 TeamInfo teamInfo = teamInfoService.queryByUserId(currentUser.getId());
-
 
                 Integer totleLike = likeService.findList(like).size();
                 Integer totleCollect = collectService.findList(collect).size();
@@ -702,51 +678,7 @@ public class ThirdController {
     @ResponseBody
     @RequestMapping("/rank")
     public List<RankRes> rank () {
-
         return teamInfoService.rank();
-
-//       List<TeamInfo> teamInfos = teamInfoService.findList(new TeamInfo());
-//       List<RankRes> list = new ArrayList<>();
-//
-//       for (TeamInfo t : teamInfos) {
-//
-//        TeamMember s = new TeamMember();
-//        s.setTeamId(t.getId());
-//        List<TeamMember> teamMembers = teamMemberService.findList(s);
-//
-//        //最佳队员
-//        Collections.sort(teamMembers, new Comparator<TeamMember>() {
-//            @Override
-//            public int compare(TeamMember o1, TeamMember o2) {
-//                return (jsUserService.get(o1.getUserId()).getRank() - jsUserService.get(o2.getUserId()).getRank()) > 0 ? -1 : 1;
-//            }
-//        });
-//
-//        Integer sum = 0;
-//        for (TeamMember e : teamMembers) {
-//            JsUser jsUser = jsUserService.get(e.getUserId());
-//            jsUser.getName();
-//            Integer score = jsUser.getRank() == null ? 0 : jsUser.getRank();
-//            sum += score;
-//        }
-//        JsUser best = jsUserService.get(teamMembers.get(0).getUserId());
-//
-//        RankRes r = new RankRes();
-//        r.setBest(best.getName());
-//        r.setName(t.getTeamName());
-//        r.setTotalRank(sum);
-//        r.setCount(teamMembers.size());
-//        list.add(r);
-//       }
-//
-//        //总分排序
-//        Collections.sort(list, new Comparator<RankRes>() {
-//            @Override
-//            public int compare(RankRes o1, RankRes o2) {
-//                return compareRank(o1.getTotalRank(), o2.getTotalRank());
-//            }
-//        });
-//       return list;
     }
 
     public int compareRank(Integer o1, Integer o2) {
@@ -759,7 +691,6 @@ public class ThirdController {
         return 0;
     }
 
-
     //重置所有用户密码为123456
     public void repass() {
         String pass = "e10adc3949ba59abbe56e057f20f883e";
@@ -769,83 +700,6 @@ public class ThirdController {
             s.setPassword(md5Password);
             jsUserService.update(s);
         }
-    }
-
-
-    /***
-     * 判断用户回答是否正确;
-     * @param userAnswerRes
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping("/isRight")
-    public ReturnRes isRight(@RequestBody UserAnswerRes userAnswerRes) {
-
-        JsUser user = getUserByToken(userAnswerRes.getToken());
-        ReturnRes res = new ReturnRes();
-        Boolean isWrong = true;
-        Boolean isRight = null;
-        String userAnswer = "";
-        String rightAnswer = "";
-
-        //获取问题信息
-        Question question = questionService.get(userAnswerRes.getQuestionId());
-
-        V8 runtime = V8.createV8Runtime();
-
-        //定时释放内存
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                   Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                   e.printStackTrace();
-            }
-            System.out.println("释放内存");
-            runtime.terminateExecution(); }
-        }).start();
-
-        String task = "JSON.stringify(" + userAnswerRes.getTask() + ")";
-
-        String userScript = userAnswerRes.getUseranswer() + task;
-        String rightScript = question.getRightAnswer() +task;
-        try {
-            userAnswer = runtime.executeStringScript(userScript);
-            rightAnswer = runtime.executeStringScript(rightScript);
-            if (userAnswer.equals(rightAnswer)) {
-                isRight = true;
-                if (user != null) {
-                    ResultRecord record = new ResultRecord();
-                    record.setMobile(user.getMobile());
-                    record.setQuestionId(userAnswerRes.getQuestionId());
-                    record.setResult("true");
-                    resultRecordService.save(record);
-                }
-            } else {
-                resultRecordService.del(question.getId());
-                isRight = false;
-            }
-        } catch (Exception e) {
-            res.setWrong(isWrong);
-            if (StringUtils.isBlank(e.getMessage())) {
-               res.setAnswer("无返回值!");
-            } else {
-                if ("null".equals(e.getMessage())) {
-                    res.setAnswer("编译超时了,检查下代码吧;");
-                } else {
-                    res.setAnswer(e.getMessage());
-                }
-            }
-		    return res;
-        }
-        runtime.release();
-
-        isWrong = false;
-        res.setAnswer(userAnswer);
-        res.setWrong(isWrong);
-        res.setRight(isRight);
-        return res;
     }
 
     /***
@@ -950,13 +804,11 @@ public class ThirdController {
                 record.setResult(userAnswerRes.getUseranswer());
                 resultRecordService.save(record);
             }
-
-
-
         }
         runtime.release();
         return returnRes;
     }
+
     /***
      * 所有人排行榜
      */
@@ -1050,18 +902,7 @@ public class ThirdController {
 	    querys.put("paras", code + ",2");
 	    querys.put("sign", "消息通");
 	    querys.put("tpid", "009");
-
-
 	    try {
-	    	/**
-	    	* 重要提示如下:
-	    	* HttpUtils请从
-	    	* https://github.com/aliyun/api-gateway-demo-sign-java/blob/master/src/main/java/com/aliyun/api/gateway/demo/util/HttpUtils.java
-	    	* 下载
-	    	*
-	    	* 相应的依赖请参照
-	    	* https://github.com/aliyun/api-gateway-demo-sign-java/blob/master/pom.xml
-	    	*/
 	    	HttpResponse response = HttpUtils.doGet(host, path, method, headers, querys);
 	    	System.out.println(response.toString());
 	    	//获取response的body
@@ -1072,6 +913,4 @@ public class ThirdController {
 	    	throw new ServiceException("请勿频繁访问接口！");
 	    }
     }
-
-
 }

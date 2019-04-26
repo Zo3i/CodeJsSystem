@@ -104,7 +104,7 @@
                     js_answer a
                     LEFT JOIN js_user u ON u.id = a.user_id
                 WHERE
-                    a.id  IN ( SELECT answerId id FROM js_like WHERE userId = "1087587547202424832" )
+                    a.id  IN ( SELECT answerId id FROM js_like WHERE userId = #{userId} )
                 ) answerRes
                 LEFT JOIN ( SELECT answerId likeId, count( 1 ) likeCount FROM js_like GROUP BY answerId ) likeCnt ON answerRes.answerId = likeCnt.likeId
             LEFT JOIN ( SELECT answerId, count( 1 ) collectCount FROM js_collect GROUP BY answerId ) collectCnt ON answerRes.answerId = collectCnt.answerId
@@ -131,7 +131,7 @@
                     js_answer a
                     LEFT JOIN js_user u ON u.id = a.user_id
                 WHERE
-                    a.id  IN ( SELECT answerId id FROM js_collect WHERE userId = "1087587547202424832" )
+                    a.id  IN ( SELECT answerId id FROM js_collect WHERE userId = #{userId} )
                 ) answerRes
                 LEFT JOIN ( SELECT answerId likeId, count( 1 ) likeCount FROM js_like GROUP BY answerId ) likeCnt ON answerRes.answerId = likeCnt.likeId
             LEFT JOIN ( SELECT answerId, count( 1 ) collectCount FROM js_collect GROUP BY answerId ) collectCnt ON answerRes.answerId = collectCnt.answerId
