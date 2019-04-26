@@ -38,9 +38,5 @@ services:
     ports:
       - "8090:8090"
     restart: always
-    depends_on:
-      - mysql
     links:
-      - mysql
       - redis
-    entrypoint: "./w.sh mysql:3306 -- java -jar /app.jar"
