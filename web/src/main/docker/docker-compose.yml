@@ -18,17 +18,17 @@ services:
     links:
       - jsweb 
 
-#  mysql:
-#    image: js/mysql
-#    volumes:
-#           - ./src/main/docker/mysql/my.cnf:/root/mysql/my.cnf mysql
-#    command: --max_allowed_packet=32505856
-#    environment:
-#       - MYSQL_ROOT_PASSWORD=123456
-#    ports:
-#       - "3306"
-#    expose:
-#       - "3306"
+  mysql:
+    image: js/mysql
+    volumes:
+           - ./src/main/docker/mysql/my.cnf:/root/mysql/my.cnf mysql
+    command: --max_allowed_packet=32505856
+    environment:
+       - MYSQL_ROOT_PASSWORD=123456
+    ports:
+       - "3306"
+    expose:
+       - "3306"
 
   jsweb:
     build: jsweb
@@ -38,5 +38,9 @@ services:
     ports:
       - "8090:8090"
     restart: always
+    depends_on:
+      - mysql
     links:
+      - mysql
       - redis
+    entrypoint: "./w.sh mysql:3306 -- java -jar /app.jar"

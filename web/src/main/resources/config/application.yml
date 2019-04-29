@@ -31,23 +31,13 @@ shiro:
 #  password: root
 #  testSql: SELECT 1
 
-
-
-jdbc: #阿里云
+jdbc: #docker
   type: mysql
   driver: com.mysql.jdbc.Driver
-  url: jdbc:mysql://rm-j6cm70w513grj0w24lo.mysql.rds.aliyuncs.com:3306/js?useSSL=true&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC
-  username: root
-  password: Zxc**123
+  url: jdbc:mysql://mysql:3306/js?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT
+  username: docker
+  password: root
   testSql: SELECT 1
-
-#jdbc: #docker
-#  type: mysql
-#  driver: com.mysql.jdbc.Driver
-#  url: jdbc:mysql://mysql:3306/js?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT
-#  username: docker
-#  password: root
-#  testSql: SELECT 1
 redis:
   enabled: true
   host: redis

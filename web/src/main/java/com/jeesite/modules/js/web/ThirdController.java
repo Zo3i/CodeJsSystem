@@ -75,7 +75,6 @@ public class ThirdController {
             JsUser temp = getUserByMobile(loginRsp.getMobile());
             loginRsp = new LoginRsp(token, temp);
         }
-
         return loginRsp;
     }
 
@@ -250,7 +249,6 @@ public class ThirdController {
         if (!isMatch) {
             return "你的手机号有点问题呀!";
         }
-
 
         JsUser temp = new JsUser();
         temp.setMobile(mobile);
@@ -584,7 +582,6 @@ public class ThirdController {
         List<QuestionRes> list = null;
         LoginRsp loginRsp = redisUtils.getSession(token);
         if (loginRsp != null) {
-
             JsUser currentUser = getUserByMobile(loginRsp.getMobile());
             if (currentUser != null) {
                 List<Question> questionlist = questionService.getAllQuestion(currentUser.getId());
@@ -679,16 +676,6 @@ public class ThirdController {
     @RequestMapping("/rank")
     public List<RankRes> rank () {
         return teamInfoService.rank();
-    }
-
-    public int compareRank(Integer o1, Integer o2) {
-        if(o1 > o2) {
-            return -1;
-        }
-        if(o2 > o1) {
-            return 1;
-        }
-        return 0;
     }
 
     //重置所有用户密码为123456
@@ -819,21 +806,6 @@ public class ThirdController {
     }
 
     /***
-     * 按难度查询问题
-     */
-    @ResponseBody
-    @RequestMapping("/getQuestions")
-    public List<QuestionSearchRes> getQuestions(String mobile,Integer lowRank, Integer highRank) {
-        JsUser user = getUserByMobile(mobile);
-        if (user != null) {
-            List<QuestionSearchRes> list = questionService.queryByScore(user.getId(), lowRank, highRank);
-            return list;
-        } else {
-            return null;
-        }
-    }
-
-    /***
      * 按时间排序
      */
     @ResponseBody
@@ -843,36 +815,6 @@ public class ThirdController {
         res.setUserId(user.getId());
         if (user != null) {
             List<QuestionSearchRes> list = questionService.queryByArgs(res);
-            return list;
-        } else {
-            return null;
-        }
-    }
-
-    /***
-     * 按完成人数排序
-     */
-    @ResponseBody
-    @RequestMapping("/queryByComplete")
-    public List<QuestionSearchRes> queryByComplete(String mobile,Integer lowRank, Integer highRank) {
-        JsUser user = getUserByMobile(mobile);
-        if (user != null) {
-            List<QuestionSearchRes> list = questionService.queryByScore(user.getId(), lowRank, highRank);
-            return list;
-        } else {
-            return null;
-        }
-    }
-
-    /***
-     * 按分数排序
-     */
-    @ResponseBody
-    @RequestMapping("/queryByScore")
-    public List<QuestionSearchRes> queryByScore(String mobile,Integer lowRank, Integer highRank) {
-        JsUser user = getUserByMobile(mobile);
-        if (user != null) {
-            List<QuestionSearchRes> list = questionService.queryByScore(user.getId(), lowRank, highRank);
             return list;
         } else {
             return null;
@@ -905,8 +847,6 @@ public class ThirdController {
 	    try {
 	    	HttpResponse response = HttpUtils.doGet(host, path, method, headers, querys);
 	    	System.out.println(response.toString());
-	    	//获取response的body
-	    	//System.out.println(EntityUtils.toString(response.getEntity()));
 	    }
 	    catch (Exception e) {
 //	    	e.printStackTrace();

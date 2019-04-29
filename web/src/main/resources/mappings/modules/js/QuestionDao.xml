@@ -24,6 +24,7 @@
 
 	<select id="getAllQuestion" resultType="Question">
 		SELECT a.create_date createTime, q.`name` name, q.score score from js_answer a  LEFT JOIN js_question q on q.id = a.question_id  where  a.user_id = #{userId}
+		order by createTime desc
 	</select>
 
 	<!--按难度查询问题-->

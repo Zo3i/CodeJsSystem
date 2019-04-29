@@ -43,6 +43,7 @@
                 a.id answerId,
                 a.question_id questionId,
                 a.user_id userId,
+                a.create_date createDate,
                 a.answer answer,
                 u.`name` name,
                 u.mobile mobile,
@@ -55,6 +56,7 @@
             ) answerRes
             LEFT JOIN ( SELECT answerId likeId, count( 1 ) likeCount FROM js_like GROUP BY answerId ) likeCnt ON answerRes.answerId = likeCnt.likeId
             LEFT JOIN ( SELECT answerId , count( 1 ) collectCount FROM js_collect GROUP BY answerId ) collectCnt ON answerRes.answerId = collectCnt.answerId)
+            order by createDate desc
     </select>
 
 
@@ -70,6 +72,7 @@
                 a.question_id questionId,
                 a.user_id userId,
                 a.answer answer,
+                a.create_date createDate,
                 u.`name` name,
                 u.mobile mobile,
                 u.zone_id zoneId
@@ -81,6 +84,7 @@
             ) answerRes
             LEFT JOIN ( SELECT answerId likeId, count( 1 ) likeCount FROM js_like GROUP BY answerId ) likeCnt ON answerRes.answerId = likeCnt.likeId
             LEFT JOIN ( SELECT answerId , count( 1 ) collectCount FROM js_collect GROUP BY answerId ) collectCnt ON answerRes.answerId = collectCnt.answerId)
+            order by createDate desc
     </select>
 
 
@@ -97,6 +101,7 @@
                     a.question_id questionId,
                     a.user_id userId,
                     a.answer answer,
+                    a.create_date createDate,
                     u.`name` NAME,
                     u.mobile mobile,
                     u.zone_id zoneId
@@ -108,7 +113,7 @@
                 ) answerRes
                 LEFT JOIN ( SELECT answerId likeId, count( 1 ) likeCount FROM js_like GROUP BY answerId ) likeCnt ON answerRes.answerId = likeCnt.likeId
             LEFT JOIN ( SELECT answerId, count( 1 ) collectCount FROM js_collect GROUP BY answerId ) collectCnt ON answerRes.answerId = collectCnt.answerId
-            )
+            ) order by createDate desc
     </select>
 
     <select id="queryCollectAnswerByQuestionId" resultType="com.jeesite.modules.js.entity.other.TempAnswerRes">
@@ -124,6 +129,7 @@
                     a.question_id questionId,
                     a.user_id userId,
                     a.answer answer,
+                    a.create_date createDate,
                     u.`name` NAME,
                     u.mobile mobile,
                     u.zone_id zoneId
@@ -135,7 +141,7 @@
                 ) answerRes
                 LEFT JOIN ( SELECT answerId likeId, count( 1 ) likeCount FROM js_like GROUP BY answerId ) likeCnt ON answerRes.answerId = likeCnt.likeId
             LEFT JOIN ( SELECT answerId, count( 1 ) collectCount FROM js_collect GROUP BY answerId ) collectCnt ON answerRes.answerId = collectCnt.answerId
-            )
+            ) order by createDate desc
     </select>
 
 
