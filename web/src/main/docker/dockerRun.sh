@@ -14,14 +14,5 @@ chmod -R 755 ./*
 
 #stop and del running docker
 docker-compose down
-
-read -p "first creat input(1):" first
-if [ "$first" -eq 1 ];
-then
- cd ./mysql
- docker build -t js/mysql .
- cd ..
-fi
-
 docker-compose build
 docker-compose up -d
