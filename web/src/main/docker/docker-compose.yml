@@ -19,7 +19,8 @@ services:
       - jsweb 
 
   mysql:
-    image: js/mysql
+    build: mysql
+    image: jo/mysql
     volumes:
            - ./src/main/docker/mysql/my.cnf:/root/mysql/my.cnf mysql
     command: --max_allowed_packet=32505856
