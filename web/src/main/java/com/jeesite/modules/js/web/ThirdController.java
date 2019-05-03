@@ -429,8 +429,11 @@ public class ThirdController {
                 teamMember.setTeamId(teamInfoService.get(teamInfo).getId());
                 teamMember.setUserId(jsUser.getId());
                 teamMemberService.insert(teamMember);
+                 //用户设置队伍ID
+                jsUser.setTeamId(teamInfo.getId());
+                jsUserService.update(jsUser);
             } else {
-                return "您已创建团队,请勿重复创建!";
+                return "已创建团队,请勿重复创建!";
             }
         } else {
             return "小队名字不能为空!";
