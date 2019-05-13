@@ -34,18 +34,22 @@
 
     <select id="queryAnswerByUserId" resultType="com.jeesite.modules.js.entity.other.TempAnswerRes">
         SELECT
-            answerRes.*,
-            IFNULL(likeCnt.likeCount, 0) likeCount,
-            IFNULL(collectCnt.collectCount, 0) collectCount
-        FROM
-            ((
+        answerRes.*,
+        IFNULL( likeCnt.likeCount, 0 ) likeCount,
+        IFNULL( collectCnt.collectCount, 0 ) collectCount,
+        completeCount completeCount,
+        q.NAME questionName,
+        q.score score
+    FROM
+        (
+            (
             SELECT
                 a.id answerId,
                 a.question_id questionId,
                 a.user_id userId,
                 a.create_date createDate,
                 a.answer answer,
-                u.`name` name,
+                u.`name` NAME,
                 u.mobile mobile,
                 u.zone_id zoneId
             FROM
@@ -55,8 +59,12 @@
                 a.user_id = #{userId}
             ) answerRes
             LEFT JOIN ( SELECT answerId likeId, count( 1 ) likeCount FROM js_like GROUP BY answerId ) likeCnt ON answerRes.answerId = likeCnt.likeId
-            LEFT JOIN ( SELECT answerId , count( 1 ) collectCount FROM js_collect GROUP BY answerId ) collectCnt ON answerRes.answerId = collectCnt.answerId)
-            order by createDate desc
+            LEFT JOIN ( SELECT answerId, count( 1 ) collectCount FROM js_collect GROUP BY answerId ) collectCnt ON answerRes.answerId = collectCnt.answerId
+            LEFT JOIN ( SELECT question_id, count( 1 ) completeCount FROM js_completed GROUP BY question_id ) completedCnt ON answerRes.questionId = completedCnt.question_id
+        )
+        LEFT JOIN js_question q ON answerRes.questionId = q.id
+    ORDER BY
+        createDate DESC
     </select>
 
 
@@ -92,7 +100,10 @@
         SELECT
             answerRes.*,
             IFNULL( likeCnt.likeCount, 0 ) likeCount,
-            IFNULL( collectCnt.collectCount, 0 ) collectCount
+            IFNULL( collectCnt.collectCount, 0 ) collectCount,
+            completeCount completeCount,
+            q.NAME questionName,
+            q.score score
         FROM
             (
                 (
@@ -100,8 +111,8 @@
                     a.id answerId,
                     a.question_id questionId,
                     a.user_id userId,
-                    a.answer answer,
                     a.create_date createDate,
+                    a.answer answer,
                     u.`name` NAME,
                     u.mobile mobile,
                     u.zone_id zoneId
@@ -109,39 +120,50 @@
                     js_answer a
                     LEFT JOIN js_user u ON u.id = a.user_id
                 WHERE
-                    a.id  IN ( SELECT answerId id FROM js_like WHERE userId = #{userId} )
+                     a.id  IN ( SELECT answerId id FROM js_like WHERE userId = #{userId})
                 ) answerRes
                 LEFT JOIN ( SELECT answerId likeId, count( 1 ) likeCount FROM js_like GROUP BY answerId ) likeCnt ON answerRes.answerId = likeCnt.likeId
-            LEFT JOIN ( SELECT answerId, count( 1 ) collectCount FROM js_collect GROUP BY answerId ) collectCnt ON answerRes.answerId = collectCnt.answerId
-            ) order by createDate desc
+                LEFT JOIN ( SELECT answerId, count( 1 ) collectCount FROM js_collect GROUP BY answerId ) collectCnt ON answerRes.answerId = collectCnt.answerId
+                LEFT JOIN ( SELECT question_id, count( 1 ) completeCount FROM js_completed GROUP BY question_id ) completedCnt ON answerRes.questionId = completedCnt.question_id
+            )
+            LEFT JOIN js_question q ON answerRes.questionId = q.id
+        ORDER BY
+            createDate DESC
     </select>
 
     <select id="queryCollectAnswerByQuestionId" resultType="com.jeesite.modules.js.entity.other.TempAnswerRes">
-        SELECT
-            answerRes.*,
-            IFNULL( likeCnt.likeCount, 0 ) likeCount,
-            IFNULL( collectCnt.collectCount, 0 ) collectCount
-        FROM
-            (
-                (
                 SELECT
-                    a.id answerId,
-                    a.question_id questionId,
-                    a.user_id userId,
-                    a.answer answer,
-                    a.create_date createDate,
-                    u.`name` NAME,
-                    u.mobile mobile,
-                    u.zone_id zoneId
-                FROM
-                    js_answer a
-                    LEFT JOIN js_user u ON u.id = a.user_id
-                WHERE
-                    a.id  IN ( SELECT answerId id FROM js_collect WHERE userId = #{userId} )
-                ) answerRes
-                LEFT JOIN ( SELECT answerId likeId, count( 1 ) likeCount FROM js_like GROUP BY answerId ) likeCnt ON answerRes.answerId = likeCnt.likeId
+        answerRes.*,
+        IFNULL( likeCnt.likeCount, 0 ) likeCount,
+        IFNULL( collectCnt.collectCount, 0 ) collectCount,
+        completeCount completeCount,
+        q.NAME questionName,
+        q.score score
+    FROM
+        (
+            (
+            SELECT
+                a.id answerId,
+                a.question_id questionId,
+                a.user_id userId,
+                a.create_date createDate,
+                a.answer answer,
+                u.`name` NAME,
+                u.mobile mobile,
+                u.zone_id zoneId
+            FROM
+                js_answer a
+                LEFT JOIN js_user u ON u.id = a.user_id
+            WHERE
+                 a.id  IN ( SELECT answerId id FROM js_collect WHERE userId = #{userId} )
+            ) answerRes
+            LEFT JOIN ( SELECT answerId likeId, count( 1 ) likeCount FROM js_like GROUP BY answerId ) likeCnt ON answerRes.answerId = likeCnt.likeId
             LEFT JOIN ( SELECT answerId, count( 1 ) collectCount FROM js_collect GROUP BY answerId ) collectCnt ON answerRes.answerId = collectCnt.answerId
-            ) order by createDate desc
+            LEFT JOIN ( SELECT question_id, count( 1 ) completeCount FROM js_completed GROUP BY question_id ) completedCnt ON answerRes.questionId = completedCnt.question_id
+        )
+        LEFT JOIN js_question q ON answerRes.questionId = q.id
+    ORDER BY
+        createDate DESC
     </select>
 
 

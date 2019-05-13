@@ -4,7 +4,7 @@ package com.jeesite.modules.js.entity.other;
 import org.apache.ibatis.type.Alias;
 
 @Alias("UserRankRes")
-public class UserRankRes {
+public class  UserRankRes {
     private String name;
     private String teamName;
     private Integer rank;

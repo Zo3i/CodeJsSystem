@@ -7,13 +7,16 @@ public class AnswerRes {
 	private String questionId;	// 问题ID
 	private String userId;		// 用户ID
 	private String answer;		// 答案
-	private String userMobile; //用户手机号
+//	private String userMobile; //用户手机号
 	private Boolean isLike;    //当前用户是否喜欢
 	private Boolean isCollect; //当前用户是否点赞
 	private Integer totalLike; //该答案获取的所有like数量
 	private Integer totalCollect;//改答案所有搜藏数量
     private String zoneId;
     private String name;
+    private String questionName;
+    private Integer score;
+    private Integer completeCount;
 //	private Question question; //问题详情
 //	private JsUser user; //答题者详情
 
@@ -31,11 +34,14 @@ public class AnswerRes {
         this.questionId = s.getQuestionId();
         this.userId = s.getUserId();
         this.answer = s.getAnswer();
-        this.userMobile = s.getMobile();
+//        this.userMobile = s.getMobile();
         this.zoneId = s.getZoneId();
         this.totalLike = s.getLikeCount();
         this.totalCollect = s.getCollectCount();
         this.name = s.getName();
+        this.questionName = s.getQuestionName();
+        this.score = s.getScore();
+        this.completeCount = s.getCompleteCount();
     }
 
     public String getQuestionId() {
@@ -62,13 +68,13 @@ public class AnswerRes {
         this.answer = answer;
     }
 
-    public String getUserMobile() {
-        return userMobile;
-    }
-
-    public void setUserMobile(String userMobile) {
-        this.userMobile = userMobile;
-    }
+//    public String getUserMobile() {
+//        return userMobile;
+//    }
+//
+//    public void setUserMobile(String userMobile) {
+//        this.userMobile = userMobile;
+//    }
 
     public Boolean getLike() {
         return isLike;
@@ -116,5 +122,29 @@ public class AnswerRes {
 
     public void setZoneId(String zoneId) {
         this.zoneId = zoneId;
+    }
+
+    public String getQuestionName() {
+        return questionName;
+    }
+
+    public void setQuestionName(String questionName) {
+        this.questionName = questionName;
+    }
+
+    public Integer getScore() {
+        return score;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
+    }
+
+    public Integer getCompleteCount() {
+        return completeCount;
+    }
+
+    public void setCompleteCount(Integer completeCount) {
+        this.completeCount = completeCount;
     }
 }

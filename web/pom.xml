@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.jeesite</groupId>
 		<artifactId>jeesite-parent</artifactId>
-		<version>4.0.6-SNAPSHOT</version>
+		<version>4.0.7-SNAPSHOT</version>
 		<relativePath>../parent/pom.xml</relativePath>
 	</parent>
 	
@@ -291,14 +291,14 @@
 
 	</repositories>
 
-	<pluginRepositories>
-		<pluginRepository>
-			<id>aliyun-repos</id>
-			<name>Aliyun Repository</name>
-			<url>http://maven.aliyun.com/nexus/content/groups/public</url>
-			<releases><enabled>true</enabled></releases>
-			<snapshots><enabled>false</enabled></snapshots>
-		</pluginRepository>
-	</pluginRepositories>
+<!--	<pluginRepositories>-->
+<!--		<pluginRepository>-->
+<!--			<id>aliyun-repos</id>-->
+<!--			<name>Aliyun Repository</name>-->
+<!--			<url>http://maven.aliyun.com/nexus/content/groups/public</url>-->
+<!--			<releases><enabled>true</enabled></releases>-->
+<!--			<snapshots><enabled>false</enabled></snapshots>-->
+<!--		</pluginRepository>-->
+<!--	</pluginRepositories>-->
 	
 </project>

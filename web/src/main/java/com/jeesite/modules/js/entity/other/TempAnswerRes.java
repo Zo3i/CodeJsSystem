@@ -5,11 +5,14 @@ public class TempAnswerRes {
     private String questionId;
     private String userId;
     private String name;
-    private String mobile;
+//    private String mobile;
     private String answer;
     private Integer likeCount;
     private Integer collectCount;
     private String zoneId;
+    private String questionName;
+    private Integer score;
+    private Integer completeCount;
 
     public String getZoneId() {
         return zoneId;
@@ -51,13 +54,13 @@ public class TempAnswerRes {
         this.name = name;
     }
 
-    public String getMobile() {
-        return mobile;
-    }
-
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
-    }
+//    public String getMobile() {
+//        return mobile;
+//    }
+//
+//    public void setMobile(String mobile) {
+//        this.mobile = mobile;
+//    }
 
     public String getAnswer() {
         return answer;
@@ -81,5 +84,29 @@ public class TempAnswerRes {
 
     public void setCollectCount(Integer collectCount) {
         this.collectCount = collectCount;
+    }
+
+    public String getQuestionName() {
+        return questionName;
+    }
+
+    public void setQuestionName(String questionName) {
+        this.questionName = questionName;
+    }
+
+    public Integer getScore() {
+        return score;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
+    }
+
+    public Integer getCompleteCount() {
+        return completeCount;
+    }
+
+    public void setCompleteCount(Integer completeCount) {
+        this.completeCount = completeCount;
     }
 }
