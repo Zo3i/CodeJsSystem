@@ -405,7 +405,11 @@ public class ThirdController {
     @RequestMapping("/teamall")
     public List<JsUser> teamall(String teamid) {
         if (StringUtils.isNotBlank(teamid)) {
-            return teamMemberService.list(teamid);
+            List<JsUser> list = teamMemberService.list(teamid);
+            for (JsUser user : list) {
+                user.setMobile("想看手机号？");
+            }
+            return list;
         }
         return null;
     }
