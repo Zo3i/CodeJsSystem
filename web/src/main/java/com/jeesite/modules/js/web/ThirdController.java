@@ -277,8 +277,7 @@ public class ThirdController {
     @ResponseBody
     @RequestMapping("/getAllAnwser")
     public List<AnswerRes> getAllAnwser(@RequestBody Answer answer) {
-
-        JsUser currentUser = getUserByMobile(answer.getUserMobile());
+        JsUser currentUser = getUserByToken(getToken());
         //校验是否有查看权限
         if (!answerService.havaPass(currentUser.getId(), answer.getQuestionId())) {
             return null;
@@ -719,6 +718,8 @@ public class ThirdController {
         List<QuestionTasks> questionTasks = questionTasksService.findList(new QuestionTasks(question.getId()));
 
         V8 runtime = V8.createV8Runtime();
+        // 记录开始的时间
+        long beginTime = System.currentTimeMillis();
 
         for (QuestionTasks teak : questionTasks) {
             //定时释放内存
@@ -800,6 +801,9 @@ public class ThirdController {
             }
         }
         runtime.release();
+        // 记录结束的时间
+        long endTime = System.currentTimeMillis();
+        System.out.println("用时：" + (endTime - beginTime));
         return returnRes;
     }
 

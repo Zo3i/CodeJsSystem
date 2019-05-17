@@ -22,13 +22,14 @@
 			t.team_name name,
 			u1.name best,
 			r.count count,
-			r.total TotalRank
+			r.total TotalRank,
+			t.create_date
 		FROM
 			js_team_info t
 			LEFT JOIN js_user u1 ON t.id = u1.team_id
 			LEFT JOIN (SELECT team_id,sum(rank) total, count(id) count from js_user group by team_id) r on t.id = r.team_id
 		WHERE
 			u1.rank = (SELECT max( rank ) rank FROM js_user u WHERE u.team_id = t.id )
-		ORDER BY r.total DESC
+		ORDER BY r.total DESC, t.create_date desc
 	</select>
 </mapper>
