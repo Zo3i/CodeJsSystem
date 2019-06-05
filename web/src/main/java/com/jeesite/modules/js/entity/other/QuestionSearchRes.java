@@ -9,6 +9,7 @@ public class QuestionSearchRes {
     private String mobile;
     private Integer count;
     private String userId;
+    private boolean isAnswered;
 
     public String getId() {
         return id;
@@ -72,5 +73,17 @@ public class QuestionSearchRes {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public boolean isAnswered() {
+        return isAnswered;
+    }
+
+    public void setAnswered(boolean answered) {
+        isAnswered = answered;
+    }
+    @Override
+    public String toString() {
+        return id;
     }
 }

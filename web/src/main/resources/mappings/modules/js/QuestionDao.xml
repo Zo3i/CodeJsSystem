@@ -49,7 +49,7 @@
 	</select>
 
 	<!--按分数排序-->
-	<select id="queryByArgs" resultType="map">
+	<select id="queryByArgs" resultType="com.jeesite.modules.js.entity.other.QuestionSearchRes">
 		select q.name name, q.score score,q.id, c.count count from js_question q LEFT join
 		(SELECT question_id, count(*) as count from js_completed GROUP BY question_id) c
 		on q.id = c.question_id where q.id not in
@@ -74,8 +74,6 @@
 		<if test="QuestionSearchRes.score != null and QuestionSearchRes.score != '' and QuestionSearchRes.count != null and QuestionSearchRes.count != ''">
 			,score desc
 	    </if>
-
-
 	</select>
 
 </mapper>

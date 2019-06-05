@@ -3,8 +3,11 @@
  */
 package com.jeesite.modules.js.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.jeesite.modules.common.utils.BeanUtils;
 import com.jeesite.modules.js.dao.QuestionTasksDao;
 import com.jeesite.modules.js.entity.QuestionTasks;
 import com.jeesite.modules.js.entity.other.QuestionSearchRes;
@@ -122,7 +125,26 @@ public class QuestionService extends CrudService<QuestionDao, Question> {
 
 	@Transactional(readOnly = false)
 	public List<QuestionSearchRes> queryByArgs(QuestionSearchRes questionSearchRes){
-		return questionDao.queryByArgs(questionSearchRes);
+
+		List<QuestionSearchRes> notCompeleteList = questionDao.queryByArgs(questionSearchRes);
+		List<QuestionSearchRes> all = questionDao.queryByArgs(new QuestionSearchRes());
+		for (QuestionSearchRes q : all) {
+			if (containsId(notCompeleteList, q.getId())) {
+				q.setAnswered(false);
+			} else {
+				q.setAnswered(true);
+			}
+		}
+		return all;
+	}
+
+	public static boolean containsId(List<QuestionSearchRes> list, String id) {
+		for (QuestionSearchRes object : list) {
+			if (object.getId().equals(id) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 
