@@ -8,10 +8,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.jeesite.modules.common.utils.BeanUtils;
+import com.jeesite.modules.js.dao.CompletedDao;
 import com.jeesite.modules.js.dao.QuestionTasksDao;
+import com.jeesite.modules.js.entity.Answer;
+import com.jeesite.modules.js.entity.Completed;
 import com.jeesite.modules.js.entity.QuestionTasks;
 import com.jeesite.modules.js.entity.other.QuestionSearchRes;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +37,8 @@ public class QuestionService extends CrudService<QuestionDao, Question> {
 	private QuestionTasksDao questionTasksDao;
 	@Autowired
 	private QuestionDao questionDao;
+	@Autowired
+    private CompletedDao completedDao;
 	/**
 	 * 获取单条数据
 	 * @param question
@@ -126,21 +132,28 @@ public class QuestionService extends CrudService<QuestionDao, Question> {
 	@Transactional(readOnly = false)
 	public List<QuestionSearchRes> queryByArgs(QuestionSearchRes questionSearchRes){
 
-		List<QuestionSearchRes> notCompeleteList = questionDao.queryByArgs(questionSearchRes);
-		List<QuestionSearchRes> all = questionDao.queryByArgs(new QuestionSearchRes());
-		for (QuestionSearchRes q : all) {
-			if (containsId(notCompeleteList, q.getId())) {
-				q.setAnswered(false);
-			} else {
+		List<QuestionSearchRes> resList = null;
+		if (StringUtils.isBlank(questionSearchRes.getName()) && questionSearchRes.getLowRank() == 0) {
+			resList = questionDao.queryByArgs(new QuestionSearchRes());
+		} else {
+			resList = questionDao.queryByArgs(questionSearchRes);
+		}
+        Completed c = new Completed();
+        c.setUserId(questionSearchRes.getUserId());
+        List<Completed> completeds = completedDao.findList(c);
+        for (QuestionSearchRes q : resList) {
+			if (containsId(completeds, q.getId())) {
 				q.setAnswered(true);
+			} else {
+				q.setAnswered(false);
 			}
 		}
-		return all;
+		return resList;
 	}
 
-	public static boolean containsId(List<QuestionSearchRes> list, String id) {
-		for (QuestionSearchRes object : list) {
-			if (object.getId().equals(id) ) {
+	public static boolean containsId(List<Completed> list, String id) {
+		for (Completed object : list) {
+			if (object.getQuestionId().equals(id) ) {
 				return true;
 			}
 		}

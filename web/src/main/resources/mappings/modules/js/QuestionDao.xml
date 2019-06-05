@@ -52,8 +52,7 @@
 	<select id="queryByArgs" resultType="com.jeesite.modules.js.entity.other.QuestionSearchRes">
 		select q.name name, q.score score,q.id, c.count count from js_question q LEFT join
 		(SELECT question_id, count(*) as count from js_completed GROUP BY question_id) c
-		on q.id = c.question_id where q.id not in
-    	(SELECT question_id from js_completed where user_id = #{QuestionSearchRes.userId})
+		on q.id = c.question_id where 1 = 1
 		<if test="QuestionSearchRes.lowRank != null and QuestionSearchRes.lowRank != ''">
 			and q.score <![CDATA[ >= ]]> #{QuestionSearchRes.lowRank}
 	    </if>
