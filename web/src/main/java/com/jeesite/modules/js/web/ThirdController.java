@@ -311,6 +311,16 @@ public class ThirdController {
     public String like(@RequestBody Like like) {
         String token = getToken();
         JsUser user = getUserByToken(token);
+
+        // 过滤
+        if (jsUserService.get(like.getAuthorid()) == null) {
+            return "用户不存在！";
+        }
+
+        if (answerService.get(like.getAnswerid()) == null) {
+            return "答案不存在！";
+        }
+
         if (like != null) {
             like.setUserid(user.getId());
             if (likeService.findList(like).size() > 0) {
@@ -346,6 +356,14 @@ public class ThirdController {
     public String collect(@RequestBody Collect collect) {
         String token = getToken();
         JsUser user = getUserByToken(token);
+        // 过滤
+        if (jsUserService.get(collect.getAuthorid()) == null) {
+            return "用户不存在！";
+        }
+
+        if (answerService.get(collect.getAnswerid()) == null) {
+            return "答案不存在！";
+        }
         if (collect != null) {
             collect.setUserid(user.getId());
             if (collectService.findList(collect).size() > 0) {
