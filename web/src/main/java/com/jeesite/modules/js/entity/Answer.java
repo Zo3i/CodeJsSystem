@@ -36,6 +36,9 @@ public class Answer extends DataEntity<Answer> {
 		this.questionId = questionId;
 	}
 
+	public Answer (String id) {
+		this.id = id;
+	}
 	
 	public Answer() {
 		super();

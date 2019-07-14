@@ -361,7 +361,7 @@ public class ThirdController {
             return "用户不存在！";
         }
 
-        if (answerService.get(collect.getAnswerid()) == null) {
+        if (answerService.get(new Answer(collect.getAnswerid())) == null) {
             return "答案不存在！";
         }
         if (collect != null) {
