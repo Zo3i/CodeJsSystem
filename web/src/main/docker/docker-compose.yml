@@ -39,8 +39,8 @@ services:
     ports:
       - "8090:8090"
     restart: always
-    depends_on:
-      - mysql
+#    depends_on:
+#      - mysql
     links:
 #      - mysql
       - redis
